@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useStore } from "@/lib/store";
 import {
     LayoutDashboard,
     FileText,
@@ -45,6 +46,7 @@ export function useSidebar() {
 
 export default function Sidebar() {
     const pathname = usePathname();
+    const store = useStore();
     const [collapsed, setCollapsed] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -108,10 +110,24 @@ export default function Sidebar() {
 
                 {/* Nav Label */}
                 {!collapsed && (
-                    <div className="px-5 pt-5 pb-2">
+                    <div className="px-5 pt-5 pb-2 flex items-center justify-between">
                         <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">
                             Navigation
                         </span>
+                        <div className={cn(
+                            "flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider transition-colors border",
+                            store.isSupabaseConnected
+                                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                        )}>
+                            <div className={cn("w-1.5 h-1.5 rounded-full", store.isSupabaseConnected ? "bg-emerald-500" : "bg-amber-500")} />
+                            {store.isSupabaseConnected ? "Live" : "Demo"}
+                        </div>
+                    </div>
+                )}
+                {collapsed && (
+                    <div className="flex justify-center pt-4 pb-2">
+                        <div className={cn("w-2 h-2 rounded-full", store.isSupabaseConnected ? "bg-emerald-500 shadow-sm shadow-emerald-500/50" : "bg-amber-500 shadow-sm shadow-amber-500/50")} />
                     </div>
                 )}
 

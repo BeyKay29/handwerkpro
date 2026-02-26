@@ -19,6 +19,7 @@ interface Store {
     templates: TextTemplate[];
     currentUser: Employee | null;
     activeTimer: { startTime: string; projectId?: string; description?: string } | null;
+    isSupabaseConnected: boolean;
 
     // Auth
     login: (email: string, password?: string) => boolean;
@@ -113,6 +114,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const [currentUser, setCurrentUser] = useState<Employee | null>(null);
     const [activeTimer, setActiveTimer] = useState<{ startTime: string; projectId?: string; description?: string } | null>(null);
     const [loaded, setLoaded] = useState(false);
+    const isSupabaseConnected = !!supabase;
 
     useEffect(() => {
         async function initStore() {
@@ -407,7 +409,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         currentUser,
         activeTimer,
         startTimer,
-        stopTimer
+        stopTimer,
+        isSupabaseConnected
     };
 
     return <StoreContext.Provider value={store}>{children}</StoreContext.Provider>;
