@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #2563eb;
+  --color-brand-light: #60a5fa;
+  --color-brand-dark: #1d4ed8;
+  --color-surface: #0f172a;
+  --color-surface-2: #1e293b;
+  --color-surface-3: #334155;
+  --color-border: #1e293b;
+  --color-border-hover: #334155;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #334155 transparent;
+}
+
+body {
+  @apply bg-slate-950 text-slate-200 antialiased;
+  font-family: var(--font-sans);
+}
+
+/* Glass surface utility */
+.glass {
+  @apply bg-slate-900/60 backdrop-blur-xl border border-slate-800/60;
+}
+
+.glass-hover {
+  @apply hover:bg-slate-800/60 hover:border-slate-700/60 transition-all duration-200;
+}
+
+/* Focus ring */
+input:focus,
+select:focus,
+textarea:focus {
+  @apply outline-none ring-2 ring-brand/40 border-brand/60;
+}
+
+/* Smooth transitions */
+.transition-base {
+  @apply transition-all duration-200 ease-out;
+}
