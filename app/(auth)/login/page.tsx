@@ -27,9 +27,9 @@ export default function LoginPage() {
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_rgba(37,99,235,0.15),transparent_60%)]" />
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_rgba(139,92,246,0.08),transparent_60%)]" />
 
-                <div className="relative z-10">
+                <div className="relative z-10 flex-shrink-0">
                     <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center font-display font-extrabold text-white shadow-lg shadow-blue-500/25">
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center font-display font-extrabold text-white shadow-lg shadow-blue-500/25 text-sm">
                             HP
                         </div>
                         <span className="font-display text-xl font-extrabold text-white tracking-tight">
@@ -38,31 +38,31 @@ export default function LoginPage() {
                     </div>
                 </div>
 
-                <div className="relative z-10 space-y-6">
-                    <h2 className="font-display text-4xl font-extrabold text-white leading-tight tracking-tight">
+                <div className="relative z-10 space-y-8 my-12">
+                    <h2 className="font-display text-4xl xl:text-5xl font-extrabold text-white leading-tight tracking-tight">
                         Ihr Betrieb.<br />
                         <span className="text-blue-400">Digital organisiert.</span>
                     </h2>
                     <p className="text-slate-400 text-base leading-relaxed max-w-md">
                         Angebote, Rechnungen, Projekte und Zeiterfassung in einer Anwendung.
-                        Professionell. Effizient. Gemacht fur Handwerker.
+                        Professionell. Effizient. Gemacht für Handwerker.
                     </p>
-                    <div className="grid grid-cols-3 gap-4 pt-4 max-w-sm">
+                    <div className="grid grid-cols-3 gap-6 pt-6 max-w-sm">
                         {[
                             { val: "500+", lbl: "Betriebe" },
-                            { val: "12k+", lbl: "Rechnungen/Monat" },
-                            { val: "99.9%", lbl: "Verfugbarkeit" },
+                            { val: "12k+", lbl: "Dokumente" },
+                            { val: "99.9%", lbl: "Verfügbar" },
                         ].map((s) => (
                             <div key={s.lbl}>
-                                <div className="font-display text-xl font-extrabold text-white">{s.val}</div>
-                                <div className="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">{s.lbl}</div>
+                                <div className="font-display text-xl xl:text-2xl font-extrabold text-white">{s.val}</div>
+                                <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">{s.lbl}</div>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                <div className="relative z-10 text-xs text-slate-600">
-                    &copy; {new Date().getFullYear()} HandwerkPro GmbH. Alle Rechte vorbehalten.
+                <div className="relative z-10 text-xs text-slate-600 flex-shrink-0">
+                    &copy; {new Date().getFullYear()} HandwerkPro. Alle Rechte vorbehalten.
                 </div>
             </div>
 

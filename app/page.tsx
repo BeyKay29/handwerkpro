@@ -211,76 +211,43 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {features.map((f, idx) => (
-              <button
-                key={f.title}
-                onClick={() => setOpenFeature(openFeature === idx ? null : idx)}
-                className={`text-left rounded-2xl p-6 transition-all duration-300 group cursor-pointer border ${openFeature === idx
-                  ? "bg-blue-500/10 border-blue-500/30 ring-1 ring-blue-500/20"
-                  : "glass hover:border-slate-700/60"
-                  }`}
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${openFeature === idx ? "bg-blue-500/20" : "bg-blue-500/10 group-hover:bg-blue-500/15"
-                      }`}
-                  >
-                    <f.icon className="w-5 h-5 text-blue-500" />
-                  </div>
-                  <ChevronRight
-                    className={`w-4 h-4 text-slate-600 transition-transform duration-200 ${openFeature === idx ? "rotate-90 text-blue-400" : ""
-                      }`}
-                  />
-                </div>
-                <h3 className="text-sm font-bold text-white mb-2">{f.title}</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">{f.desc}</p>
-              </button>
-            ))}
-          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {features.map((f, idx) => {
+              const moduleId = f.title.toLowerCase().replace(/ & /g, "-").replace(/ /g, "-").replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue");
+              // Match the IDs in funktionen/page.tsx: dokumente, mahnwesen, projekte, plantafel, zeiten, kunden, mitarbeiter, katalog, dashboard
+              const mapping: Record<string, string> = {
+                "angebote-rechnungen": "dokumente",
+                "mahnwesen": "mahnwesen",
+                "projektverwaltung": "projekte",
+                "plantafel": "plantafel",
+                "zeiterfassung": "zeiten",
+                "kundenverwaltung": "kunden",
+                "leistungskatalog": "katalog",
+                "dashboard-auswertungen": "dashboard"
+              };
+              const id = mapping[moduleId] || moduleId;
 
-          {/* Detail Panel */}
-          {openFeature !== null && (
-            <div className="mt-8 glass rounded-2xl overflow-hidden">
-              <div className="flex items-center justify-between px-8 py-5 border-b border-slate-800/60">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-blue-500/15 flex items-center justify-center">
-                    {(() => {
-                      const Icon = features[openFeature].icon;
-                      return <Icon className="w-5 h-5 text-blue-500" />;
-                    })()}
-                  </div>
-                  <h3 className="font-display text-xl font-bold text-white">
-                    {features[openFeature].title}
-                  </h3>
-                </div>
-                <button
-                  onClick={() => setOpenFeature(null)}
-                  className="w-8 h-8 rounded-lg border border-slate-700 hover:border-slate-600 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="px-8 py-6 space-y-4">
-                {features[openFeature].detail.map((paragraph, i) => (
-                  <div key={i} className="flex gap-4">
-                    <div className="w-6 h-6 rounded-full bg-blue-500/15 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-[11px] font-bold text-blue-400">{i + 1}</span>
-                    </div>
-                    <p className="text-sm text-slate-300 leading-relaxed">{paragraph}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="px-8 py-5 bg-slate-800/20 border-t border-slate-800/60">
+              return (
                 <Link
-                  href="/login"
-                  className="inline-flex items-center gap-2 text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+                  key={f.title}
+                  href={`/funktionen#${id}`}
+                  className="text-left rounded-2xl p-6 transition-all duration-300 group cursor-pointer border glass hover:border-blue-500/50 hover:bg-blue-500/5"
                 >
-                  Jetzt ausprobieren <ArrowRight className="w-4 h-4" />
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="w-10 h-10 rounded-xl bg-blue-500/10 group-hover:bg-blue-500/20 flex items-center justify-center transition-colors">
+                      <f.icon className="w-5 h-5 text-blue-500" />
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-blue-400 transition-transform duration-200" />
+                  </div>
+                  <h3 className="text-sm font-bold text-white mb-2">{f.title}</h3>
+                  <p className="text-xs text-slate-400 leading-relaxed">{f.desc}</p>
+                  <div className="mt-4 flex items-center gap-1.5 text-[10px] font-bold text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                    Details ansehen <ArrowRight className="w-3 h-3" />
+                  </div>
                 </Link>
-              </div>
-            </div>
-          )}
+              );
+            })}
+          </div>
         </div>
       </section>
 

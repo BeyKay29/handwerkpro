@@ -182,106 +182,170 @@ const modules = [
     },
 ];
 
+const Mockup = ({ type }: { type: string }) => {
+    if (type === "dashboard") return (
+        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden p-4 shadow-2xl scale-[0.85] lg:scale-100 origin-top">
+            <div className="flex gap-2 mb-4">
+                {[1, 2, 3].map(i => <div key={i} className="flex-1 h-32 bg-slate-800/50 rounded-lg border border-slate-700/50" />)}
+            </div>
+            <div className="h-40 bg-slate-800/50 rounded-lg border border-slate-700/50 flex flex-col p-3 gap-2">
+                <div className="w-1/3 h-4 bg-slate-700 rounded" />
+                <div className="flex-1 border-b border-slate-700/50" />
+                <div className="flex-1 border-b border-slate-700/50" />
+                <div className="flex-1 border-b border-slate-700/50" />
+            </div>
+        </div>
+    );
+    if (type === "dokumente") return (
+        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden p-4 shadow-2xl scale-[0.85] lg:scale-100 origin-top">
+            <div className="flex justify-between mb-4 border-b border-slate-800 pb-2">
+                <div className="w-24 h-4 bg-blue-500/20 rounded" />
+                <div className="w-20 h-4 bg-slate-800 rounded" />
+            </div>
+            <div className="space-y-2 mb-4">
+                <div className="flex justify-between"><div className="w-1/2 h-4 bg-slate-800 rounded" /><div className="w-12 h-4 bg-blue-500/20 rounded" /></div>
+                <div className="flex justify-between"><div className="w-1/3 h-4 bg-slate-800 rounded" /><div className="w-10 h-4 bg-blue-500/20 rounded" /></div>
+            </div>
+            <div className="pt-2 border-t border-slate-800 text-[10px] text-slate-500 flex justify-between">
+                <span>Gesamtbetrag</span>
+                <span className="text-blue-400 font-bold">1.240,50 €</span>
+            </div>
+        </div>
+    );
+    if (type === "zeiten") return (
+        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden p-3 shadow-2xl scale-[0.85] lg:scale-100 origin-top">
+            <div className="flex items-center gap-3 p-3 bg-blue-600/10 rounded-lg border border-blue-500/20 mb-3">
+                <div className="w-8 h-8 rounded-full bg-blue-500 border-2 border-blue-400 animate-pulse" />
+                <div className="flex-1">
+                    <div className="text-xs font-bold text-white">Timer läuft...</div>
+                    <div className="text-[10px] text-blue-400">02:45:12</div>
+                </div>
+                <div className="w-6 h-6 rounded bg-red-500" />
+            </div>
+            <div className="space-y-1">
+                {[1, 2].map(i => <div key={i} className="h-8 bg-slate-800/50 rounded border border-slate-800" />)}
+            </div>
+        </div>
+    );
+    return (
+        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden p-4 shadow-2xl flex flex-col gap-2 scale-[0.85] lg:scale-100 origin-top">
+            <div className="h-6 w-1/4 bg-slate-800 rounded" />
+            <div className="flex-1 border-t border-slate-800 pt-2 flex flex-col gap-2">
+                {[1, 2, 3].map(i => <div key={i} className="h-8 w-full bg-slate-800/50 rounded" />)}
+            </div>
+        </div>
+    );
+};
+
 export default function FunktionenPage() {
     const [expandedModule, setExpandedModule] = useState<string | null>("dokumente");
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-200">
+        <div className="min-h-screen bg-slate-950 text-slate-200 selection:bg-blue-500/30">
             {/* Header */}
             <header className="fixed top-0 w-full z-50 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl">
-                <div className="max-w-5xl mx-auto flex items-center justify-between px-6 h-16">
+                <div className="max-w-6xl mx-auto flex items-center justify-between px-5 sm:px-8 h-16">
                     <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                        <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center font-display font-extrabold text-white text-xs">HP</div>
-                        <span className="font-display text-base font-extrabold text-white tracking-tight">Handwerk<span className="text-blue-500">Pro</span></span>
+                        <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center font-display font-extrabold text-white text-[13px] shadow-lg shadow-blue-500/20">HP</div>
+                        <span className="font-display text-lg font-extrabold text-white tracking-tight">Handwerk<span className="text-blue-500">Pro</span></span>
                     </Link>
                     <div className="flex items-center gap-3">
-                        <Link href="/" className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors font-medium"><ArrowLeft className="w-4 h-4" /> Zurueck</Link>
-                        <Link href="/login" className="text-sm bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2.5 rounded-lg transition-colors shadow-lg shadow-blue-500/20">Jetzt testen</Link>
+                        <Link href="/" className="hidden sm:flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors font-medium"><ArrowLeft className="w-4 h-4" /> Zurück</Link>
+                        <Link href="/login" className="text-sm bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-xl transition-all shadow-lg shadow-blue-500/25 active:scale-95">Kostenlos testen</Link>
                     </div>
                 </div>
             </header>
 
             {/* Hero */}
-            <section className="pt-28 pb-12 px-6 text-center">
-                <h1 className="font-display text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4">
-                    So funktioniert HandwerkPro
+            <section className="pt-28 sm:pt-36 pb-12 px-6 text-center max-w-4xl mx-auto">
+                <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-6">Dokumentation</div>
+                <h1 className="font-display text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-6 leading-tight">
+                    Alle Funktionen <span className="text-blue-500">im Detail</span>
                 </h1>
-                <p className="text-slate-400 max-w-xl mx-auto text-base">
-                    Detaillierte Erklaerungen aller Module mit Funktionsbeschreibungen. Klicken Sie auf ein Modul, um alle Details zu sehen.
+                <p className="text-slate-400 text-base sm:text-lg leading-relaxed mb-10">
+                    Entdecken Sie, wie HandwerkPro Ihren Arbeitsalltag vereinfacht. Von der ersten Kalkulation bis zur fertigen Mahnung – alles in einer Hand.
                 </p>
-            </section>
-
-            {/* Quick Nav */}
-            <div className="px-6 mb-12">
-                <div className="max-w-5xl mx-auto flex flex-wrap justify-center gap-2">
+                <div className="flex flex-wrap justify-center gap-2">
                     {modules.map((m) => (
                         <button
                             key={m.id}
                             onClick={() => { setExpandedModule(m.id); document.getElementById(m.id)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-                            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold border transition-colors ${expandedModule === m.id ? "bg-blue-500/15 border-blue-500/30 text-blue-400" : "border-slate-800 text-slate-400 hover:text-white hover:border-slate-700"}`}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] sm:text-xs font-bold border transition-all ${expandedModule === m.id ? "bg-blue-500/15 border-blue-500/30 text-blue-400 ring-2 ring-blue-500/10" : "border-slate-800 text-slate-500 hover:text-white hover:border-slate-700"}`}
                         >
                             <m.icon className="w-3.5 h-3.5" /> {m.title}
                         </button>
                     ))}
                 </div>
-            </div>
+            </section>
 
             {/* Modules */}
-            <div className="max-w-5xl mx-auto px-6 pb-24 space-y-6">
+            <div className="max-w-5xl mx-auto px-5 sm:px-8 pb-32 space-y-8">
                 {modules.map((mod) => {
                     const isOpen = expandedModule === mod.id;
                     return (
-                        <div key={mod.id} id={mod.id} className="glass rounded-2xl overflow-hidden scroll-mt-24">
+                        <div key={mod.id} id={mod.id} className={`glass rounded-3xl overflow-hidden scroll-mt-24 transition-all duration-500 ${isOpen ? "ring-2 ring-blue-500/20 border-blue-500/20" : "hover:border-slate-700/60"}`}>
                             <button
                                 onClick={() => setExpandedModule(isOpen ? null : mod.id)}
-                                className="w-full flex items-center justify-between px-6 lg:px-8 py-5 text-left hover:bg-slate-800/20 transition-colors"
+                                className="w-full flex items-center justify-between px-6 sm:px-10 py-6 sm:py-8 text-left hover:bg-slate-800/10 transition-colors"
                             >
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                                        <mod.icon className="w-5 h-5 text-blue-500" />
+                                <div className="flex items-center gap-5 sm:gap-6">
+                                    <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center flex-shrink-0 transition-colors ${isOpen ? "bg-blue-500/20" : "bg-slate-800/50"}`}>
+                                        <mod.icon className={`w-6 h-6 sm:w-7 sm:h-7 ${isOpen ? "text-blue-400" : "text-slate-400"}`} />
                                     </div>
                                     <div>
-                                        <h2 className="text-base font-bold text-white">{mod.title}</h2>
-                                        <p className="text-xs text-slate-500 mt-0.5">{mod.subtitle}</p>
+                                        <h2 className="text-lg sm:text-2xl font-bold text-white tracking-tight">{mod.title}</h2>
+                                        <p className="text-xs sm:text-sm text-slate-500 mt-1">{mod.subtitle}</p>
                                     </div>
                                 </div>
-                                {isOpen ? <ChevronUp className="w-5 h-5 text-slate-500" /> : <ChevronDown className="w-5 h-5 text-slate-500" />}
+                                <div className={`w-10 h-10 rounded-full border border-slate-800 flex items-center justify-center transition-all ${isOpen ? "rotate-180 border-blue-500/30 text-blue-400" : "text-slate-500"}`}>
+                                    <ChevronDown className="w-5 h-5" />
+                                </div>
                             </button>
 
                             {isOpen && (
-                                <div className="px-6 lg:px-8 pb-6 space-y-6 border-t border-slate-800/60 pt-6">
-                                    {mod.sections.map((section, i) => (
-                                        <div key={i} className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6">
-                                            <div>
-                                                <div className="flex items-center gap-2 mb-3">
-                                                    <div className="w-6 h-6 rounded-full bg-blue-500/15 flex items-center justify-center flex-shrink-0">
-                                                        <span className="text-[11px] font-bold text-blue-400">{i + 1}</span>
+                                <div className="px-6 sm:px-10 pb-10 space-y-12 animate-in fade-in slide-in-from-top-4 duration-500">
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center border-t border-slate-800/60 pt-10">
+                                        <div className="space-y-6 order-2 lg:order-1">
+                                            {mod.sections.map((section, i) => (
+                                                <div key={i} className="space-y-4">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-6 h-6 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+                                                            <span className="text-[11px] font-bold text-blue-400">{i + 1}</span>
+                                                        </div>
+                                                        <h3 className="text-base font-bold text-white tracking-tight">{section.heading}</h3>
                                                     </div>
-                                                    <h3 className="text-sm font-bold text-white">{section.heading}</h3>
+                                                    <p className="text-sm sm:text-base text-slate-400 leading-relaxed pl-9">
+                                                        {section.text}
+                                                    </p>
+                                                    <div className="pl-9">
+                                                        <ul className="grid grid-cols-1 gap-x-6 gap-y-2 mt-2">
+                                                            {section.bullets.map((b, j) => (
+                                                                <li key={j} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-300">
+                                                                    <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+                                                                    {b}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
                                                 </div>
-                                                <p className="text-sm text-slate-300 leading-relaxed mb-4">
-                                                    {section.text}
-                                                </p>
-                                            </div>
-                                            <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-800/60">
-                                                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Funktionen</div>
-                                                <ul className="space-y-2.5">
-                                                    {section.bullets.map((b, j) => (
-                                                        <li key={j} className="flex items-start gap-2 text-xs text-slate-300 leading-relaxed">
-                                                            <CheckCircle2 className="w-3.5 h-3.5 text-blue-500 flex-shrink-0 mt-0.5" />
-                                                            {b}
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
+                                            ))}
                                         </div>
-                                    ))}
+                                        <div className="order-1 lg:order-2">
+                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                                <div className="w-2 h-2 rounded-full bg-emerald-500" /> Auszug aus dem Programm
+                                            </div>
+                                            <Mockup type={mod.id} />
+                                        </div>
+                                    </div>
 
-                                    <div className="flex items-center gap-4 pt-4 border-t border-slate-800/40">
-                                        <Link href="/login" className="flex items-center gap-2 text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors">
+                                    <div className="flex flex-wrap items-center gap-4 pt-8 border-t border-slate-800/40">
+                                        <Link href="/login" className="flex items-center gap-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-95">
                                             Jetzt ausprobieren <ArrowRight className="w-4 h-4" />
                                         </Link>
-                                        <span className="text-xs text-slate-600">30 Tage kostenlos, keine Kreditkarte</span>
+                                        <div className="flex flex-col">
+                                            <span className="text-xs font-bold text-white">30 Tage kostenlos</span>
+                                            <span className="text-[11px] text-slate-500">Voller Funktionsumfang, keine Kreditkarte benötigt</span>
+                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -291,10 +355,16 @@ export default function FunktionenPage() {
             </div>
 
             {/* Footer */}
-            <footer className="border-t border-slate-800/60 py-8 px-6">
-                <div className="max-w-5xl mx-auto flex items-center justify-between text-xs text-slate-500">
-                    <span>&copy; {new Date().getFullYear()} HandwerkPro</span>
-                    <Link href="/" className="hover:text-slate-300 transition-colors">Zurueck zur Startseite</Link>
+            <footer className="border-t border-slate-800/60 py-12 px-6">
+                <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 text-sm text-slate-500">
+                    <div className="flex items-center gap-6">
+                        <span className="font-bold text-slate-400 tracking-tight">&copy; {new Date().getFullYear()} HandwerkPro</span>
+                        <Link href="/login" className="hover:text-white transition-colors">Login</Link>
+                        <Link href="/register" className="hover:text-white transition-colors">Registrieren</Link>
+                    </div>
+                    <Link href="/" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-800 hover:border-slate-700 hover:bg-slate-900 transition-all font-medium">
+                        <ArrowLeft className="w-4 h-4" /> Zur Startseite
+                    </Link>
                 </div>
             </footer>
         </div>

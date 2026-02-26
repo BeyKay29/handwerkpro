@@ -111,6 +111,7 @@ export interface CatalogItem {
     id: string;
     company_id: string;
     name: string;
+    article_number?: string;
     category?: string;
     unit: string;
     price: number;

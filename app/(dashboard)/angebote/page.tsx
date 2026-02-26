@@ -20,6 +20,8 @@ export default function AngebotePage() {
     const [search, setSearch] = useState("");
     const [modalOpen, setModalOpen] = useState(false);
     const [payModalOpen, setPayModalOpen] = useState(false);
+    const [catalogModalOpen, setCatalogModalOpen] = useState(false);
+    const [catalogSearch, setCatalogSearch] = useState("");
     const [editId, setEditId] = useState<string | null>(null);
     const [payDocId, setPayDocId] = useState<string | null>(null);
     const [payAmount, setPayAmount] = useState(0);
@@ -129,6 +131,32 @@ export default function AngebotePage() {
     function acceptAngebot(id: string) {
         store.updateInvoice(id, { status: "angenommen" });
         toast("Angebot angenommen", "success");
+    }
+
+    const filteredCatalog = store.catalog.filter(item =>
+        !catalogSearch ||
+        item.name.toLowerCase().includes(catalogSearch.toLowerCase()) ||
+        item.article_number?.toLowerCase().includes(catalogSearch.toLowerCase())
+    );
+
+    function addFromCatalog(item: any) {
+        const newItem: DocumentItem = {
+            description: item.name,
+            quantity: 1,
+            unit: item.unit,
+            unit_price: item.price,
+            total: item.price,
+            sort_order: items.length
+        };
+
+        // Remove empty first item if it's the only one and is empty
+        if (items.length === 1 && !items[0].description) {
+            setItems([newItem]);
+        } else {
+            setItems(prev => [...prev, newItem]);
+        }
+
+        toast("Position hinzugefügt", "success", item.name);
     }
 
     return (
@@ -247,13 +275,7 @@ export default function AngebotePage() {
                         </div>
                         <div className="flex gap-2 mt-3">
                             <button onClick={() => setItems((prev) => [...prev, emptyItem()])} className="px-3 py-1.5 text-xs font-semibold border border-slate-700 hover:border-blue-500 text-slate-400 hover:text-blue-400 rounded-lg transition-colors">+ Position</button>
-                            <button onClick={() => {
-                                /* Quick add from catalog */
-                                const cat = store.catalog;
-                                if (!cat.length) return;
-                                const first = cat[0];
-                                setItems((prev) => [...prev, { description: first.name, quantity: 1, unit: first.unit, unit_price: first.price, total: first.price, sort_order: prev.length }]);
-                            }} className="px-3 py-1.5 text-xs font-semibold border border-slate-700 hover:border-blue-500 text-slate-400 hover:text-blue-400 rounded-lg transition-colors">Aus Katalog</button>
+                            <button onClick={() => setCatalogModalOpen(true)} className="px-3 py-1.5 text-xs font-semibold border border-slate-700 hover:border-blue-500 text-slate-400 hover:text-blue-400 rounded-lg transition-colors">Aus Katalog wählen</button>
                         </div>
                     </div>
 
@@ -293,6 +315,57 @@ export default function AngebotePage() {
                     <div>
                         <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Zahlungsbetrag (EUR)</label>
                         <input type="number" value={payAmount} onChange={(e) => setPayAmount(Number(e.target.value))} step="0.01" className="w-full px-4 py-2.5 bg-slate-800/80 border border-slate-700 rounded-lg text-sm text-white" />
+                    </div>
+                </div>
+            </Modal>
+
+            {/* Catalog Search Modal */}
+            <Modal
+                open={catalogModalOpen}
+                onClose={() => setCatalogModalOpen(false)}
+                title="Aus Katalog wählen"
+                size="md"
+            >
+                <div className="space-y-4">
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                        <input
+                            type="text"
+                            placeholder="Leistung oder Artikel suchen..."
+                            value={catalogSearch}
+                            onChange={(e) => setCatalogSearch(e.target.value)}
+                            className="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-800 rounded-lg text-sm text-white placeholder-slate-600 focus:ring-2 focus:ring-blue-500/40"
+                            autoFocus
+                        />
+                    </div>
+
+                    <div className="max-h-[400px] overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+                        {filteredCatalog.map((item) => (
+                            <button
+                                key={item.id}
+                                onClick={() => addFromCatalog(item)}
+                                className="w-full text-left p-4 rounded-xl border border-slate-800 hover:border-blue-500/50 hover:bg-blue-500/5 transition-all group"
+                            >
+                                <div className="flex justify-between items-start">
+                                    <div>
+                                        <div className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">{item.name}</div>
+                                        <div className="text-xs text-slate-500 mt-1 flex gap-3">
+                                            <span>Art.-Nr: {item.article_number || "—"}</span>
+                                            <span>Einheit: {item.unit}</span>
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-sm font-bold text-white">{formatCurrency(item.price)}</div>
+                                        <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider mt-1">zzgl. MwSt.</div>
+                                    </div>
+                                </div>
+                            </button>
+                        ))}
+                        {filteredCatalog.length === 0 && (
+                            <div className="py-12 text-center">
+                                <p className="text-sm text-slate-500 italic">Keine Einträge im Katalog gefunden.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </Modal>
