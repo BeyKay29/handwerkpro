@@ -36,8 +36,10 @@ export interface Employee {
     skills: string[];
     color: string;
     is_active: boolean;
-    locked_at?: string;          // ISO timestamp when account was locked
-    locked_reason?: string;      // Reason for locking
+    locked_at?: string;
+    locked_reason?: string;
+    contract_file_name?: string;  // Original filename of uploaded contract PDF
+    contract_file_data?: string;  // Base64-encoded file content
     created_at: string;
 }
 
