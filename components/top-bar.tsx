@@ -34,13 +34,12 @@ export default function TopBar() {
     const pageName = pageNames[pathname || ""] || "HandwerkPro";
     const unreadCount = store.notifications.filter(n => !n.is_read).length;
 
-    // PROTECTION: If no user is logged in, redirect to login page
-    // excluding public landing page or login page itself to avoid loops
+    // PROTECTION: redirect to login only AFTER store has finished loading from localStorage
     useEffect(() => {
-        if (!store.currentUser && pathname !== "/" && pathname !== "/login") {
+        if (store.loaded && !store.currentUser && pathname !== "/" && pathname !== "/login") {
             router.push("/login");
         }
-    }, [store.currentUser, pathname, router]);
+    }, [store.loaded, store.currentUser, pathname, router]);
 
     return (
         <header className="sticky top-0 z-20 h-16 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl flex items-center justify-between px-6 lg:px-8 flex-shrink-0">

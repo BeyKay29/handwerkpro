@@ -20,6 +20,7 @@ interface Store {
     currentUser: Employee | null;
     activeTimer: { startTime: string; projectId?: string; description?: string } | null;
     isSupabaseConnected: boolean;
+    loaded: boolean;
 
     // Auth
     login: (email: string, password?: string) => boolean;
@@ -419,7 +420,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         activeTimer,
         startTimer,
         stopTimer,
-        isSupabaseConnected
+        isSupabaseConnected,
+        loaded
     };
 
     return <StoreContext.Provider value={store}>{children}</StoreContext.Provider>;
