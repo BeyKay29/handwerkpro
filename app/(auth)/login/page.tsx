@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Eye, EyeOff, ArrowRight, Lock } from "lucide-react";
 import { useStore } from "@/lib/store";
 
+export const dynamic = "force-dynamic";
+
 export default function LoginPage() {
     const store = useStore();
     const [email, setEmail] = useState("");
