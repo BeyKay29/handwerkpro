@@ -1,5 +1,6 @@
 "use client";
-import { mockEmployees, mockProjects, mockTimeEntries } from "@/lib/mock-data";
+
+import { useStore } from "@/lib/store";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 
@@ -17,9 +18,10 @@ function getWeekDays(offset: number) {
 }
 
 export default function PlantafelPage() {
+    const store = useStore();
     const [offset, setOffset] = useState(0);
     const days = getWeekDays(offset);
-    const today = new Date().toISOString().split("T")[0];
+    const todayStr = new Date().toISOString().split("T")[0];
 
     return (
         <div className="p-8 max-w-[1400px] mx-auto space-y-6">
@@ -29,13 +31,9 @@ export default function PlantafelPage() {
                     <p className="text-slate-400 text-sm mt-1">{days[0].label} &ndash; {days[4].label}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                    <button onClick={() => setOffset(o => o - 1)} className="w-9 h-9 rounded-lg border border-slate-700 hover:border-slate-600 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
-                        <ChevronLeft className="w-4 h-4" />
-                    </button>
+                    <button onClick={() => setOffset((o) => o - 1)} className="w-9 h-9 rounded-lg border border-slate-700 hover:border-slate-600 flex items-center justify-center text-slate-400 hover:text-white transition-colors"><ChevronLeft className="w-4 h-4" /></button>
                     <button onClick={() => setOffset(0)} className="px-4 py-2 text-xs font-semibold border border-slate-700 hover:border-slate-600 rounded-lg text-slate-400 hover:text-white transition-colors">Heute</button>
-                    <button onClick={() => setOffset(o => o + 1)} className="w-9 h-9 rounded-lg border border-slate-700 hover:border-slate-600 flex items-center justify-center text-slate-400 hover:text-white transition-colors">
-                        <ChevronRight className="w-4 h-4" />
-                    </button>
+                    <button onClick={() => setOffset((o) => o + 1)} className="w-9 h-9 rounded-lg border border-slate-700 hover:border-slate-600 flex items-center justify-center text-slate-400 hover:text-white transition-colors"><ChevronRight className="w-4 h-4" /></button>
                 </div>
             </header>
 
@@ -45,15 +43,13 @@ export default function PlantafelPage() {
                         <thead>
                             <tr className="border-b border-slate-800/60">
                                 <th className="px-5 py-3.5 text-left text-[11px] font-bold text-slate-500 uppercase tracking-wider w-48">Mitarbeiter</th>
-                                {days.map(d => (
-                                    <th key={d.date} className={`px-3 py-3.5 text-center text-[11px] font-bold uppercase tracking-wider ${d.date === today ? "text-blue-400 bg-blue-500/5" : "text-slate-500"}`}>
-                                        {d.label}
-                                    </th>
+                                {days.map((d) => (
+                                    <th key={d.date} className={`px-3 py-3.5 text-center text-[11px] font-bold uppercase tracking-wider ${d.date === todayStr ? "text-blue-400 bg-blue-500/5" : "text-slate-500"}`}>{d.label}</th>
                                 ))}
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-800/40">
-                            {mockEmployees.map(emp => (
+                            {store.employees.map((emp) => (
                                 <tr key={emp.id} className="hover:bg-slate-800/20 transition-colors">
                                     <td className="px-5 py-4">
                                         <div className="flex items-center gap-3">
@@ -61,23 +57,23 @@ export default function PlantafelPage() {
                                             <span className="text-sm font-semibold text-white">{emp.first_name} {emp.last_name}</span>
                                         </div>
                                     </td>
-                                    {days.map(d => {
-                                        const dayEntries = mockTimeEntries.filter(t => t.employee_id === emp.id && t.date === d.date);
-                                        const isToday = d.date === today;
-                                        if (!dayEntries.length) {
+                                    {days.map((d) => {
+                                        const entries = store.timeEntries.filter((t) => t.employee_id === emp.id && t.date === d.date);
+                                        const isToday = d.date === todayStr;
+                                        if (!entries.length) {
                                             return (
                                                 <td key={d.date} className={`px-2 py-3 ${isToday ? "bg-blue-500/5" : ""}`}>
                                                     <div className="w-full py-2 border border-dashed border-slate-800 rounded-lg text-center text-xs text-slate-600 hover:border-slate-600 hover:text-slate-400 cursor-pointer transition-colors">+</div>
                                                 </td>
                                             );
                                         }
-                                        const entry = dayEntries[0];
-                                        const proj = mockProjects.find(p => p.id === entry.project_id);
-                                        const colorIdx = proj ? mockProjects.indexOf(proj) % COLORS.length : 0;
+                                        const entry = entries[0];
+                                        const proj = store.projects.find((p) => p.id === entry.project_id);
+                                        const colorIdx = proj ? store.projects.indexOf(proj) % COLORS.length : 0;
                                         return (
                                             <td key={d.date} className={`px-2 py-3 ${isToday ? "bg-blue-500/5" : ""}`}>
-                                                <div className={`w-full px-2 py-2 rounded-lg text-[11px] font-semibold text-center truncate cursor-pointer hover:opacity-80 transition-opacity ${dayEntries.length > 1 ? "bg-red-500/20 text-red-300" : COLORS[colorIdx]}`} title={proj ? proj.name : entry.type}>
-                                                    {dayEntries.length > 1 ? "Konflikt" : (proj ? proj.name.slice(0, 14) : entry.type)}
+                                                <div className={`w-full px-2 py-2 rounded-lg text-[11px] font-semibold text-center truncate cursor-pointer hover:opacity-80 transition-opacity ${entries.length > 1 ? "bg-red-500/20 text-red-300" : COLORS[colorIdx]}`} title={proj?.name || entry.type}>
+                                                    {entries.length > 1 ? "Konflikt" : (proj ? proj.name.slice(0, 14) : entry.type)}
                                                 </div>
                                             </td>
                                         );
@@ -89,12 +85,10 @@ export default function PlantafelPage() {
                 </div>
             </div>
 
-            {/* Legend */}
             <div className="flex flex-wrap gap-4">
-                {mockProjects.filter(p => p.status === "aktiv").map((p, i) => (
+                {store.projects.filter((p) => p.status === "aktiv").map((p) => (
                     <div key={p.id} className="flex items-center gap-2 text-xs text-slate-400">
-                        <div className="w-3 h-3 rounded" style={{ backgroundColor: p.color }} />
-                        {p.name}
+                        <div className="w-3 h-3 rounded" style={{ backgroundColor: p.color }} />{p.name}
                     </div>
                 ))}
             </div>
