@@ -124,7 +124,7 @@ export default function LandingPage() {
               HP
             </div>
             <span className="font-display text-lg font-extrabold text-white tracking-tight">
-              Handwerk<span className="text-blue-500">Pro</span>
+              Handwerk<span className="text-blue-500">Pro</span> <span className="text-[10px] bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded ml-1">v2.0</span>
             </span>
           </div>
           <nav className="hidden md:flex items-center gap-8">
