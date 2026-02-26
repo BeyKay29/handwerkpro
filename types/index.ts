@@ -4,6 +4,7 @@ export type ProjectStatus = "planung" | "aktiv" | "abgeschlossen" | "storniert";
 export type TimeEntryType = "arbeit" | "fahrt" | "pause" | "urlaub" | "krankheit" | "schlechtwetter" | "schulung";
 export type LeaveStatus = "beantragt" | "genehmigt" | "abgelehnt" | "storniert";
 export type LeaveType = "urlaub" | "krankheit" | "sonderurlaub" | "freizeitausgleich";
+export type CorrectionStatus = "offen" | "genehmigt" | "abgelehnt";
 
 export interface Customer {
     id: string;
@@ -35,6 +36,8 @@ export interface Employee {
     skills: string[];
     color: string;
     is_active: boolean;
+    locked_at?: string;          // ISO timestamp when account was locked
+    locked_reason?: string;      // Reason for locking
     created_at: string;
 }
 
@@ -167,4 +170,22 @@ export interface DashboardStats {
     openProposals: number;
     proposalVolume: number;
     customerCount: number;
+}
+
+export interface CorrectionRequest {
+    id: string;
+    company_id: string;
+    employee_id: string;
+    time_entry_id?: string;      // Existing entry to correct (optional)
+    date: string;                // Date of the correction
+    requested_start?: string;    // What employee claims it should be
+    requested_end?: string;
+    requested_pause?: number;
+    requested_type?: string;
+    reason: string;              // Why the correction is needed
+    status: CorrectionStatus;
+    admin_note?: string;
+    reviewed_by?: string;       // Employee ID of admin who reviewed
+    reviewed_at?: string;
+    created_at: string;
 }

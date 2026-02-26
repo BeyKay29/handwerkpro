@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
-import { Customer, Employee, Project, Invoice, TimeEntry, CatalogItem, Notification, TextTemplate, LeaveRequest } from "@/types";
+import { Customer, Employee, Project, Invoice, TimeEntry, CatalogItem, Notification, TextTemplate, LeaveRequest, CorrectionRequest } from "@/types";
 import { mockCustomers, mockEmployees, mockProjects, mockInvoices, mockTimeEntries, mockCatalog, mockLeaveRequests } from "@/lib/mock-data";
 import { uid } from "@/lib/utils";
 import { createClient } from "@/lib/supabase";
@@ -65,6 +65,19 @@ interface Store {
     approveLeaveRequest: (id: string, note?: string) => void;
     rejectLeaveRequest: (id: string, note: string) => void;
 
+    // Correction Requests
+    correctionRequests: CorrectionRequest[];
+    addCorrectionRequest: (r: Omit<CorrectionRequest, "id" | "company_id" | "created_at" | "status">) => CorrectionRequest;
+    updateCorrectionRequest: (id: string, r: Partial<CorrectionRequest>) => void;
+    deleteCorrectionRequest: (id: string) => void;
+    approveCorrectionRequest: (id: string, note?: string) => void;
+    rejectCorrectionRequest: (id: string, note: string) => void;
+
+    // Employee admin actions
+    lockEmployee: (id: string, reason: string) => void;
+    unlockEmployee: (id: string) => void;
+    changeEmployeePassword: (id: string, newPassword: string) => void;
+
     // Catalog
     addCatalogItem: (c: Omit<CatalogItem, "id" | "company_id" | "created_at">) => CatalogItem;
     updateCatalogItem: (id: string, c: Partial<CatalogItem>) => void;
@@ -120,6 +133,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const [invoices, setInvoices] = useState<Invoice[]>([]);
     const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([]);
     const [leaveRequests, setLeaveRequests] = useState<LeaveRequest[]>([]);
+    const [correctionRequests, setCorrectionRequests] = useState<CorrectionRequest[]>([]);
     const [catalog, setCatalog] = useState<CatalogItem[]>([]);
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [templates, setTemplates] = useState<TextTemplate[]>([]);
@@ -136,6 +150,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             setInvoices(loadOrDefault("invoices", mockInvoices));
             setTimeEntries(loadOrDefault("timeEntries", mockTimeEntries));
             setLeaveRequests(loadOrDefault("leaveRequests", mockLeaveRequests));
+            setCorrectionRequests(loadOrDefault("correctionRequests", []));
             setCatalog(loadOrDefault("catalog", mockCatalog));
             setNotifications(loadOrDefault("notifications", []));
             setTemplates(loadOrDefault("templates", [
@@ -183,6 +198,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     useEffect(() => { if (loaded) persist("invoices", invoices); }, [invoices, loaded]);
     useEffect(() => { if (loaded) persist("timeEntries", timeEntries); }, [timeEntries, loaded]);
     useEffect(() => { if (loaded) persist("leaveRequests", leaveRequests); }, [leaveRequests, loaded]);
+    useEffect(() => { if (loaded) persist("correctionRequests", correctionRequests); }, [correctionRequests, loaded]);
     useEffect(() => { if (loaded) persist("catalog", catalog); }, [catalog, loaded]);
     useEffect(() => { if (loaded) persist("notifications", notifications); }, [notifications, loaded]);
     useEffect(() => { if (loaded) persist("templates", templates); }, [templates, loaded]);
@@ -423,6 +439,33 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }, [employees]);
     const getProjectName = useCallback((id?: string) => (id ? projects.find((p) => p.id === id)?.name || "\u2014" : "\u2014"), [projects]);
 
+    // --- Correction Requests ---
+    const addCorrectionRequest = useCallback((r: Omit<CorrectionRequest, "id" | "company_id" | "created_at" | "status">): CorrectionRequest => {
+        const req: CorrectionRequest = { ...r, id: uid(), company_id: "co1", status: "offen", created_at: new Date().toISOString() };
+        setCorrectionRequests(p => [...p, req]);
+        return req;
+    }, []);
+    const updateCorrectionRequest = useCallback((id: string, r: Partial<CorrectionRequest>) => { setCorrectionRequests(p => p.map(x => x.id === id ? { ...x, ...r } : x)); }, []);
+    const deleteCorrectionRequest = useCallback((id: string) => { setCorrectionRequests(p => p.filter(x => x.id !== id)); }, []);
+    const approveCorrectionRequest = useCallback((id: string, note?: string) => {
+        setCorrectionRequests(p => p.map(x => x.id === id ? { ...x, status: "genehmigt" as const, admin_note: note, reviewed_at: new Date().toISOString() } : x));
+    }, []);
+    const rejectCorrectionRequest = useCallback((id: string, note: string) => {
+        setCorrectionRequests(p => p.map(x => x.id === id ? { ...x, status: "abgelehnt" as const, admin_note: note, reviewed_at: new Date().toISOString() } : x));
+    }, []);
+
+    // --- Employee Admin Actions ---
+    const lockEmployee = useCallback((id: string, reason: string) => {
+        setEmployees(p => p.map(e => e.id === id ? { ...e, is_active: false, locked_at: new Date().toISOString(), locked_reason: reason } : e));
+    }, []);
+    const unlockEmployee = useCallback((id: string) => {
+        setEmployees(p => p.map(e => e.id === id ? { ...e, is_active: true, locked_at: undefined, locked_reason: undefined } : e));
+    }, []);
+    const changeEmployeePassword = useCallback((id: string, newPassword: string) => {
+        setEmployees(p => p.map(e => e.id === id ? { ...e, password: newPassword } : e));
+    }, []);
+
+
     // --- Aggregation Helpers ---
     const getCustomerRevenue = useCallback((customerId: string) => {
         return invoices.filter((d) => d.customer_id === customerId && d.status === "bezahlt").reduce((s, d) => s + d.total_amount, 0);
@@ -444,13 +487,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }, [invoices]);
 
     const store: Store = {
-        customers, employees, projects, invoices, timeEntries, leaveRequests, catalog, notifications, templates,
+        customers, employees, projects, invoices, timeEntries, leaveRequests, correctionRequests, catalog, notifications, templates,
         addCustomer, updateCustomer, deleteCustomer,
         addEmployee, updateEmployee, deleteEmployee,
         addProject, updateProject, deleteProject,
         addInvoice, updateInvoice, deleteInvoice,
         addTimeEntry, updateTimeEntry, deleteTimeEntry, approveTimeEntry, rejectTimeEntry,
         addLeaveRequest, updateLeaveRequest, deleteLeaveRequest, approveLeaveRequest, rejectLeaveRequest,
+        addCorrectionRequest, updateCorrectionRequest, deleteCorrectionRequest, approveCorrectionRequest, rejectCorrectionRequest,
+        lockEmployee, unlockEmployee, changeEmployeePassword,
         addCatalogItem, updateCatalogItem, deleteCatalogItem,
         addNotification, markAsRead, clearNotifications,
         addTemplate, updateTemplate, deleteTemplate,
