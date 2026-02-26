@@ -120,6 +120,9 @@ export default function LandingPage() {
       <div className="fixed top-0 left-0 w-full bg-orange-600 text-white text-[10px] font-black py-1 px-4 z-[9999] text-center uppercase tracking-widest">
         System Update Live: {new Date().toLocaleTimeString()} (v2.0 / Next.js Stability Fix)
       </div>
+      <div className="fixed top-8 left-0 w-full bg-red-600 text-white text-xl font-black py-4 z-[9998] text-center">
+        VIVID DEPLOYMENT TEST: IF YOU SEE THIS, IT IS UPDATED!
+      </div>
       {/* Header */}
       <header className="fixed top-0 w-full z-50 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl">
         <div className="max-w-6xl mx-auto flex items-center justify-between px-6 h-16">
