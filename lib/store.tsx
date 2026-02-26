@@ -4,6 +4,9 @@ import { createContext, useContext, useState, useEffect, useCallback, ReactNode 
 import { Customer, Employee, Project, Invoice, TimeEntry, CatalogItem, Notification, TextTemplate } from "@/types";
 import { mockCustomers, mockEmployees, mockProjects, mockInvoices, mockTimeEntries, mockCatalog } from "@/lib/mock-data";
 import { uid } from "@/lib/utils";
+import { createClient } from "@/lib/supabase";
+
+const supabase = createClient();
 
 interface Store {
     customers: Customer[];
@@ -112,29 +115,42 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-        setCustomers(loadOrDefault("customers", mockCustomers));
-        setEmployees(loadOrDefault("employees", mockEmployees));
-        setProjects(loadOrDefault("projects", mockProjects));
-        setInvoices(loadOrDefault("invoices", mockInvoices));
-        setTimeEntries(loadOrDefault("timeEntries", mockTimeEntries));
-        setCatalog(loadOrDefault("catalog", mockCatalog));
-        setNotifications(loadOrDefault("notifications", []));
-        setTemplates(loadOrDefault("templates", [
-            { id: "t1", company_id: "co1", name: "Standard Angebot", type: "angebot", subject: "Angebot für Handwerksleistungen", content: "Sehr geehrte Damen und Herren,\n\nvielen Dank für Ihre Anfrage. Gerne unterbreiten wir Ihnen folgendes Angebot...", created_at: new Date().toISOString() },
-            { id: "t2", company_id: "co1", name: "Standard Rechnung", type: "rechnung", subject: "Rechnung [NR]", content: "Sehr geehrte Damen und Herren,\n\nanbei erhalten Sie die Rechnung für die erbrachten Leistungen zu Projekt [PROJEKT]...", created_at: new Date().toISOString() }
-        ]));
+        async function initStore() {
+            setCustomers(loadOrDefault("customers", mockCustomers));
+            setEmployees(loadOrDefault("employees", mockEmployees));
+            setProjects(loadOrDefault("projects", mockProjects));
+            setInvoices(loadOrDefault("invoices", mockInvoices));
+            setTimeEntries(loadOrDefault("timeEntries", mockTimeEntries));
+            setCatalog(loadOrDefault("catalog", mockCatalog));
+            setNotifications(loadOrDefault("notifications", []));
+            setTemplates(loadOrDefault("templates", [
+                { id: "t1", company_id: "co1", name: "Standard Angebot", type: "angebot", subject: "Angebot für Handwerksleistungen", content: "Sehr geehrte Damen und Herren,\n\nvielen Dank für Ihre Anfrage. Gerne unterbreiten wir Ihnen folgendes Angebot...", created_at: new Date().toISOString() },
+                { id: "t2", company_id: "co1", name: "Standard Rechnung", type: "rechnung", subject: "Rechnung [NR]", content: "Sehr geehrte Damen und Herren,\n\nanbei erhalten Sie die Rechnung für die erbrachten Leistungen zu Projekt [PROJEKT]...", created_at: new Date().toISOString() }
+            ]));
 
-        const storedUser = localStorage.getItem("hwp_currentUser");
-        if (storedUser) {
-            try { setCurrentUser(JSON.parse(storedUser)); } catch { }
+            const storedUser = localStorage.getItem("hwp_currentUser");
+            if (storedUser) {
+                try { setCurrentUser(JSON.parse(storedUser)); } catch { }
+            }
+
+            const storedTimer = localStorage.getItem("hwp_activeTimer");
+            if (storedTimer) {
+                try { setActiveTimer(JSON.parse(storedTimer)); } catch { }
+            }
+
+            // Sync with Supabase if available
+            if (supabase) {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    // Fetch real data from Supabase
+                    console.log("Supabase session found. Fetching real data...");
+                    // In a real app, we'd fetch all tables here. For now, we keep the sync simple.
+                }
+            }
+
+            setLoaded(true);
         }
-
-        const storedTimer = localStorage.getItem("hwp_activeTimer");
-        if (storedTimer) {
-            try { setActiveTimer(JSON.parse(storedTimer)); } catch { }
-        }
-
-        setLoaded(true);
+        initStore();
     }, []);
 
     useEffect(() => { if (loaded) persist("customers", customers); }, [customers, loaded]);
@@ -178,17 +194,28 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
     // --- Auth ---
     const login = useCallback((email: string, password?: string) => {
+        // First try mock login for fast demo
         const emp = employees.find(e => e.email === email && (!password || e.password === password));
         if (emp) {
             setCurrentUser(emp);
             return true;
         }
+
+        // Potential Supabase Auth integration
+        /*
+        if (supabase) {
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (!error) return true;
+        }
+        */
+
         return false;
     }, [employees]);
 
     const logout = useCallback(() => {
         setCurrentUser(null);
         setActiveTimer(null);
+        if (supabase) supabase.auth.signOut();
     }, []);
 
     // --- Simulation ---
