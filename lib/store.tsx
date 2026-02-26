@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
-import { Customer, Employee, Project, Invoice, TimeEntry, CatalogItem } from "@/types";
+import { Customer, Employee, Project, Invoice, TimeEntry, CatalogItem, Notification, TextTemplate } from "@/types";
 import { mockCustomers, mockEmployees, mockProjects, mockInvoices, mockTimeEntries, mockCatalog } from "@/lib/mock-data";
 import { uid } from "@/lib/utils";
 
@@ -12,6 +12,18 @@ interface Store {
     invoices: Invoice[];
     timeEntries: TimeEntry[];
     catalog: CatalogItem[];
+    notifications: Notification[];
+    templates: TextTemplate[];
+    currentUser: Employee | null;
+    activeTimer: { startTime: string; projectId?: string; description?: string } | null;
+
+    // Auth
+    login: (email: string, password?: string) => boolean;
+    logout: () => void;
+
+    // Timer
+    startTimer: (projectId?: string, description?: string) => void;
+    stopTimer: () => void;
 
     // Customers
     addCustomer: (c: Omit<Customer, "id" | "company_id" | "created_at">) => Customer;
@@ -43,6 +55,16 @@ interface Store {
     updateCatalogItem: (id: string, c: Partial<CatalogItem>) => void;
     deleteCatalogItem: (id: string) => void;
 
+    // Notifications
+    addNotification: (n: Omit<Notification, "id" | "company_id" | "created_at" | "is_read">) => void;
+    markAsRead: (id: string) => void;
+    clearNotifications: () => void;
+
+    // Templates
+    addTemplate: (t: Omit<TextTemplate, "id" | "company_id" | "created_at">) => void;
+    updateTemplate: (id: string, t: Partial<TextTemplate>) => void;
+    deleteTemplate: (id: string) => void;
+
     // Helpers
     getCustomerName: (id: string) => string;
     getEmployeeName: (id: string) => string;
@@ -55,6 +77,9 @@ interface Store {
     getCustomerProjectCount: (customerId: string) => number;
     getProjectInvoiced: (projectId: string) => number;
     getProjectPaid: (projectId: string) => number;
+
+    // Simulations
+    simulateOfferAccepted: (invoiceId: string) => void;
 }
 
 const StoreContext = createContext<Store | null>(null);
@@ -80,6 +105,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const [invoices, setInvoices] = useState<Invoice[]>([]);
     const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([]);
     const [catalog, setCatalog] = useState<CatalogItem[]>([]);
+    const [notifications, setNotifications] = useState<Notification[]>([]);
+    const [templates, setTemplates] = useState<TextTemplate[]>([]);
+    const [currentUser, setCurrentUser] = useState<Employee | null>(null);
+    const [activeTimer, setActiveTimer] = useState<{ startTime: string; projectId?: string; description?: string } | null>(null);
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
@@ -89,6 +118,22 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         setInvoices(loadOrDefault("invoices", mockInvoices));
         setTimeEntries(loadOrDefault("timeEntries", mockTimeEntries));
         setCatalog(loadOrDefault("catalog", mockCatalog));
+        setNotifications(loadOrDefault("notifications", []));
+        setTemplates(loadOrDefault("templates", [
+            { id: "t1", company_id: "co1", name: "Standard Angebot", type: "angebot", subject: "Angebot für Handwerksleistungen", content: "Sehr geehrte Damen und Herren,\n\nvielen Dank für Ihre Anfrage. Gerne unterbreiten wir Ihnen folgendes Angebot...", created_at: new Date().toISOString() },
+            { id: "t2", company_id: "co1", name: "Standard Rechnung", type: "rechnung", subject: "Rechnung [NR]", content: "Sehr geehrte Damen und Herren,\n\nanbei erhalten Sie die Rechnung für die erbrachten Leistungen zu Projekt [PROJEKT]...", created_at: new Date().toISOString() }
+        ]));
+
+        const storedUser = localStorage.getItem("hwp_currentUser");
+        if (storedUser) {
+            try { setCurrentUser(JSON.parse(storedUser)); } catch { }
+        }
+
+        const storedTimer = localStorage.getItem("hwp_activeTimer");
+        if (storedTimer) {
+            try { setActiveTimer(JSON.parse(storedTimer)); } catch { }
+        }
+
         setLoaded(true);
     }, []);
 
@@ -98,8 +143,83 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     useEffect(() => { if (loaded) persist("invoices", invoices); }, [invoices, loaded]);
     useEffect(() => { if (loaded) persist("timeEntries", timeEntries); }, [timeEntries, loaded]);
     useEffect(() => { if (loaded) persist("catalog", catalog); }, [catalog, loaded]);
+    useEffect(() => { if (loaded) persist("notifications", notifications); }, [notifications, loaded]);
+    useEffect(() => { if (loaded) persist("templates", templates); }, [templates, loaded]);
+
+    useEffect(() => {
+        if (loaded) {
+            if (currentUser) localStorage.setItem("hwp_currentUser", JSON.stringify(currentUser));
+            else localStorage.removeItem("hwp_currentUser");
+        }
+    }, [currentUser, loaded]);
+
+    useEffect(() => {
+        if (loaded) {
+            if (activeTimer) localStorage.setItem("hwp_activeTimer", JSON.stringify(activeTimer));
+            else localStorage.removeItem("hwp_activeTimer");
+        }
+    }, [activeTimer, loaded]);
 
     const now = () => new Date().toISOString().split("T")[0];
+
+    // --- Notifications ---
+    const addNotification = useCallback((n: Omit<Notification, "id" | "company_id" | "created_at" | "is_read">) => {
+        const entry: Notification = { ...n, id: uid(), company_id: "co1", created_at: new Date().toISOString(), is_read: false };
+        setNotifications(prev => [entry, ...prev]);
+    }, []);
+
+    const markAsRead = useCallback((id: string) => {
+        setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
+    }, []);
+
+    const clearNotifications = useCallback(() => {
+        setNotifications([]);
+    }, []);
+
+    // --- Auth ---
+    const login = useCallback((email: string, password?: string) => {
+        const emp = employees.find(e => e.email === email && (!password || e.password === password));
+        if (emp) {
+            setCurrentUser(emp);
+            return true;
+        }
+        return false;
+    }, [employees]);
+
+    const logout = useCallback(() => {
+        setCurrentUser(null);
+        setActiveTimer(null);
+    }, []);
+
+    // --- Simulation ---
+    const simulateOfferAccepted = useCallback((invoiceId: string) => {
+        setInvoices(prev => prev.map(i => {
+            if (i.id === invoiceId && i.doc_type === "angebot") {
+                addNotification({
+                    title: "Angebot angenommen",
+                    message: `Das Angebot ${i.doc_number} wurde vom Kunden akzeptiert (via Mail).`,
+                    type: "success",
+                    link: "/angebote"
+                });
+                return { ...i, status: "angenommen" as any };
+            }
+            return i;
+        }));
+    }, [addNotification]);
+
+    // --- Templates ---
+    const addTemplate = useCallback((t: Omit<TextTemplate, "id" | "company_id" | "created_at">) => {
+        const entry: TextTemplate = { ...t, id: uid(), company_id: "co1", created_at: new Date().toISOString() };
+        setTemplates(prev => [...prev, entry]);
+    }, []);
+
+    const updateTemplate = useCallback((id: string, t: Partial<TextTemplate>) => {
+        setTemplates(prev => prev.map(x => x.id === id ? { ...x, ...t } : x));
+    }, []);
+
+    const deleteTemplate = useCallback((id: string) => {
+        setTemplates(prev => prev.filter(x => x.id !== id));
+    }, []);
 
     // --- Customers ---
     const addCustomer = useCallback((c: Omit<Customer, "id" | "company_id" | "created_at">) => {
@@ -179,6 +299,41 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         setCatalog((prev) => prev.filter((x) => x.id !== id));
     }, []);
 
+    // --- Timer ---
+    const startTimer = useCallback((projectId?: string, description?: string) => {
+        setActiveTimer({
+            startTime: new Date().toISOString(),
+            projectId,
+            description
+        });
+    }, []);
+
+    const stopTimer = useCallback(() => {
+        if (!activeTimer || !currentUser) return;
+
+        const start = new Date(activeTimer.startTime);
+        const end = new Date();
+        const duration = (end.getTime() - start.getTime()) / (1000 * 3600);
+
+        const pad = (n: number) => String(n).padStart(2, '0');
+        const startStr = `${pad(start.getHours())}:${pad(start.getMinutes())}`;
+        const endStr = `${pad(end.getHours())}:${pad(end.getMinutes())}`;
+
+        addTimeEntry({
+            employee_id: currentUser.id,
+            project_id: activeTimer.projectId,
+            date: now(),
+            start_time: startStr,
+            end_time: endStr,
+            duration: Math.round(duration * 100) / 100,
+            type: "arbeit",
+            description: activeTimer.description || "Timer-Eintrag",
+            is_approved: false
+        });
+
+        setActiveTimer(null);
+    }, [activeTimer, currentUser, addTimeEntry, now]);
+
     // --- Helpers ---
     const getCustomerName = useCallback((id: string) => customers.find((c) => c.id === id)?.name || "\u2014", [customers]);
     const getEmployeeName = useCallback((id: string) => {
@@ -208,16 +363,24 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }, [invoices]);
 
     const store: Store = {
-        customers, employees, projects, invoices, timeEntries, catalog,
+        customers, employees, projects, invoices, timeEntries, catalog, notifications, templates,
         addCustomer, updateCustomer, deleteCustomer,
         addEmployee, updateEmployee, deleteEmployee,
         addProject, updateProject, deleteProject,
         addInvoice, updateInvoice, deleteInvoice,
         addTimeEntry, updateTimeEntry, deleteTimeEntry,
         addCatalogItem, updateCatalogItem, deleteCatalogItem,
+        addNotification, markAsRead, clearNotifications,
+        addTemplate, updateTemplate, deleteTemplate,
+        login, logout,
         getCustomerName, getEmployeeName, getProjectName,
         getCustomerRevenue, getCustomerOpenAmount, getCustomerDocCount, getCustomerProjectCount,
         getProjectInvoiced, getProjectPaid,
+        simulateOfferAccepted,
+        currentUser,
+        activeTimer,
+        startTimer,
+        stopTimer
     };
 
     return <StoreContext.Provider value={store}>{children}</StoreContext.Provider>;

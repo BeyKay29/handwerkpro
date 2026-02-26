@@ -5,366 +5,394 @@ import Link from "next/link";
 import {
     FileText, AlertTriangle, Briefcase, CalendarRange,
     Clock, Users, Wrench, BarChart3, ArrowRight, ArrowLeft,
-    CheckCircle2, ChevronDown, ChevronUp,
+    CheckCircle2, ChevronDown, TrendingUp, MapPin,
+    UserCheck, Database, Zap, Lock, ShieldCheck, Award
 } from "lucide-react";
 
+// --- Realistic UI Mockups ---
+
+const DashboardUI = () => (
+    <div className="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl p-4 space-y-4 font-sans select-none pointer-events-none">
+        <div className="flex items-center justify-between mb-2">
+            <div className="flex gap-1">
+                <div className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
+                <div className="w-2.5 h-2.5 rounded-full bg-amber-500/50" />
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/50" />
+            </div>
+            <div className="text-[10px] font-bold text-slate-600 tracking-[0.2em] uppercase">Status: Live</div>
+        </div>
+        <div className="grid grid-cols-3 gap-3">
+            <div className="glass p-3 rounded-xl border border-blue-500/20">
+                <div className="text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-1">Umsatz</div>
+                <div className="text-sm font-black text-white">42.850€</div>
+                <div className="text-[7px] text-emerald-500 font-bold mt-1">+12.4% ↑</div>
+            </div>
+            <div className="glass p-3 rounded-xl border border-amber-500/20">
+                <div className="text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-1">Offen</div>
+                <div className="text-sm font-black text-amber-500">8.210€</div>
+                <div className="text-[7px] text-slate-600 font-bold mt-1">12 Belege</div>
+            </div>
+            <div className="glass p-3 rounded-xl border border-purple-500/20">
+                <div className="text-[8px] font-bold text-slate-500 uppercase tracking-widest mb-1">Projekte</div>
+                <div className="text-sm font-black text-white">14</div>
+                <div className="text-[7px] text-purple-500 font-bold mt-1">8 Aktiv</div>
+            </div>
+        </div>
+        <div className="glass p-4 rounded-xl border border-slate-800/60 bg-slate-900/40">
+            <div className="flex items-center justify-between mb-3 border-b border-slate-800 pb-2">
+                <div className="text-[9px] font-bold text-white uppercase tracking-wider">Aktive Baustellen</div>
+                <BarChart3 className="w-3 h-3 text-blue-500" />
+            </div>
+            <div className="space-y-3">
+                <div className="space-y-1">
+                    <div className="flex justify-between text-[9px]"><span className="text-slate-400">Neubau MFH Heidelberg</span> <span className="text-white font-bold">75%</span></div>
+                    <div className="w-full h-1 bg-slate-800 rounded-full overflow-hidden"><div className="w-3/4 h-full bg-blue-500" /></div>
+                </div>
+                <div className="space-y-1">
+                    <div className="flex justify-between text-[9px]"><span className="text-slate-400">Sanierung Villa West</span> <span className="text-white font-bold">40%</span></div>
+                    <div className="w-full h-1 bg-slate-800 rounded-full overflow-hidden"><div className="w-[40%] h-full bg-emerald-500" /></div>
+                </div>
+            </div>
+        </div>
+    </div>
+);
+
+const InvoiceUI = () => (
+    <div className="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl p-5 font-sans space-y-5 select-none pointer-events-none">
+        <div className="flex justify-between items-start">
+            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black text-white text-xs shadow-lg shadow-blue-500/20">HP</div>
+            <div className="text-right">
+                <div className="text-[10px] font-black text-white">RECHNUNG</div>
+                <div className="text-[8px] text-slate-500">RE-2026-042</div>
+            </div>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+            <div className="p-3 bg-slate-900/50 rounded-xl border border-slate-800">
+                <div className="text-[7px] font-bold text-blue-500 uppercase tracking-widest mb-1">Empfänger</div>
+                <div className="text-[9px] font-bold text-white">Baugesellschaft Müller GmbH</div>
+                <div className="text-[8px] text-slate-500">Industriestr. 12, 69115 Heidelberg</div>
+            </div>
+            <div className="p-3 bg-slate-900/50 rounded-xl border border-slate-800">
+                <div className="text-[7px] font-bold text-blue-500 uppercase tracking-widest mb-1">Details</div>
+                <div className="text-[9px] font-bold text-white">Datum: 24.02.2026</div>
+                <div className="text-[8px] text-slate-500">Projekt: MFH EG-Ausbau</div>
+            </div>
+        </div>
+        <div className="space-y-2">
+            <div className="grid grid-cols-5 text-[7px] font-black text-slate-600 uppercase border-b border-slate-800 pb-1 px-1">
+                <div className="col-span-2">Position</div>
+                <div className="text-center">Menge</div>
+                <div className="text-right">Einzel</div>
+                <div className="text-right">Gesamt</div>
+            </div>
+            <div className="grid grid-cols-5 text-[8px] text-white p-1 bg-white/5 rounded">
+                <div className="col-span-2 font-bold line-clamp-1">Fassadenanstrich Silikonharz</div>
+                <div className="text-center text-slate-500">240 m²</div>
+                <div className="text-right text-slate-500">28,50 €</div>
+                <div className="text-right font-black">6.840,00 €</div>
+            </div>
+            <div className="grid grid-cols-5 text-[8px] text-white p-1">
+                <div className="col-span-2 font-bold line-clamp-1">Gerüstbau Gr. 3</div>
+                <div className="text-center text-slate-500">1 Pausch.</div>
+                <div className="text-right text-slate-500">1.250,00 €</div>
+                <div className="text-right font-black">1.250,00 €</div>
+            </div>
+        </div>
+        <div className="pt-3 border-t border-slate-800 flex justify-end">
+            <div className="w-32 space-y-1">
+                <div className="flex justify-between text-[8px]"><span className="text-slate-500">Nettobetrag</span><span className="text-white font-bold">8.090,00 €</span></div>
+                <div className="flex justify-between text-[8px]"><span className="text-slate-500">MwSt. (19%)</span><span className="text-white font-bold">1.537,10 €</span></div>
+                <div className="flex justify-between text-[10px] pt-1 border-t border-slate-800"><span className="text-blue-400 font-black">GESAMT</span><span className="text-blue-400 font-extrabold">9.627,10 €</span></div>
+            </div>
+        </div>
+    </div>
+);
+
+const PlantafelUI = () => (
+    <div className="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl p-3 font-sans space-y-3 select-none pointer-events-none">
+        <div className="flex items-center justify-between">
+            <div className="text-[10px] font-black text-white">WOCHENPLAN: FEBRUAR KW 09</div>
+            <div className="flex gap-1">
+                <div className="w-5 h-5 rounded bg-slate-900 border border-slate-800 flex items-center justify-center text-[8px] text-slate-500">&lt;</div>
+                <div className="w-5 h-5 rounded bg-slate-900 border border-slate-800 flex items-center justify-center text-[8px] text-slate-500">&gt;</div>
+            </div>
+        </div>
+        <div className="overflow-hidden border border-slate-800 rounded-xl">
+            <table className="w-full text-left text-[8px]">
+                <thead>
+                    <tr className="bg-slate-900 border-b border-slate-800">
+                        <th className="p-2 border-r border-slate-800 w-16">Name</th>
+                        <th className="p-2 text-center">Mo</th>
+                        <th className="p-2 text-center bg-blue-500/5 text-blue-400">Di</th>
+                        <th className="p-2 text-center">Mi</th>
+                        <th className="p-2 text-center">Do</th>
+                        <th className="p-2 text-center">Fr</th>
+                    </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800">
+                    <tr>
+                        <td className="p-2 border-r border-slate-800 font-bold text-white">M. Weber</td>
+                        <td className="p-1"><div className="bg-blue-500/20 border border-blue-500/30 text-blue-400 rounded py-1 px-1 font-black truncate">MFH-Heid</div></td>
+                        <td className="p-1 bg-blue-500/5"><div className="bg-blue-500/20 border border-blue-500/30 text-blue-400 rounded py-1 px-1 font-black truncate">MFH-Heid</div></td>
+                        <td className="p-1"><div className="bg-blue-500/20 border border-blue-500/30 text-blue-400 rounded py-1 px-1 font-black truncate">MFH-Heid</div></td>
+                        <td className="p-1"><div className="bg-amber-500/20 border border-amber-500/30 text-amber-400 rounded py-1 px-1 font-black truncate">Villa-W</div></td>
+                        <td className="p-1"><div className="bg-amber-500/20 border border-amber-500/30 text-amber-400 rounded py-1 px-1 font-black truncate">Villa-W</div></td>
+                    </tr>
+                    <tr>
+                        <td className="p-2 border-r border-slate-800 font-bold text-white">S. Klein</td>
+                        <td className="p-1"><div className="bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded py-1 px-1 font-black truncate">Sanierung</div></td>
+                        <td className="p-1 bg-blue-500/5"><div className="bg-red-500/20 border border-red-500/30 text-red-500 rounded py-1 px-1 font-black truncate">KONFLIKT</div></td>
+                        <td className="p-1"><div className="bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded py-1 px-1 font-black truncate">Sanierung</div></td>
+                        <td className="p-1"><div className="bg-blue-500/20 border border-blue-500/30 text-blue-400 rounded py-1 px-1 font-black truncate">MFH-Heid</div></td>
+                        <td className="p-1 text-center italic text-slate-600">-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+);
+
+const EmployeeUI = () => (
+    <div className="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl p-4 font-sans space-y-4 select-none pointer-events-none">
+        <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center font-black text-white text-lg">MW</div>
+            <div>
+                <div className="text-sm font-black text-white">Markus Weber</div>
+                <div className="text-[10px] text-slate-500">Bauleiter / Geselle</div>
+            </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+            <div className="p-3 bg-slate-900 border border-slate-800 rounded-xl">
+                <div className="text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1">Stundensatz</div>
+                <div className="text-xs font-black text-white">55,00 € / h</div>
+            </div>
+            <div className="p-3 bg-slate-900 border border-slate-800 rounded-xl">
+                <div className="text-[7px] font-bold text-slate-500 uppercase tracking-widest mb-1">Gesamtzeit (Feb)</div>
+                <div className="text-xs font-black text-white">142.5 h</div>
+            </div>
+        </div>
+        <div className="space-y-2">
+            <div className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Kompetenzen</div>
+            <div className="flex flex-wrap gap-1">
+                {["Trockenbau", "Brandschutz", "Leitung"].map(s => (
+                    <span key={s} className="px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[8px] font-bold rounded-lg uppercase">{s}</span>
+                ))}
+            </div>
+        </div>
+    </div>
+);
+
+// --- Content Definitions ---
+
 const modules = [
+    {
+        id: "dashboard",
+        icon: BarChart3,
+        title: "Intelligentes Dashboard",
+        subtitle: "Ihre Schaltzentrale für den Unternehmenserfolg",
+        description: "Behalten Sie alle Kennzahlen in Echtzeit im Auge. Das Dashboard automatisiert die Überwachung von Umsatz, offenen Forderungen und Projektfortschritten, sodass Sie sich auf die Arbeit konzentrieren können.",
+        UI: DashboardUI,
+        features: [
+            { title: "Live-Kennzahlen", text: "Umsatz, Cashflow und offene Posten auf einen Blick, ohne manuelles Rechnen.", icon: TrendingUp },
+            { title: "Smart Alerts", text: "Warnungen bei Budgetüberschreitungen oder kritischen Fristen.", icon: AlertTriangle },
+            { title: "Handlungsbedarf", text: "Tägliche To-Do Liste mit fälligen Mahnungen und anstehenden Terminen.", icon: CheckCircle2 }
+        ]
+    },
     {
         id: "dokumente",
         icon: FileText,
         title: "Angebote & Rechnungen",
-        subtitle: "Professionelle Dokumente in unter 5 Minuten",
-        color: "blue",
-        sections: [
-            {
-                heading: "Dokument erstellen",
-                text: "Waehlen Sie zwischen Angebot und Rechnung. Ordnen Sie einen Kunden und optional ein Projekt zu. Das System generiert automatisch eine fortlaufende Dokumentnummer (z.B. AN-2026-0001 oder RE-2026-0003).",
-                bullets: ["Dokumenttyp: Angebot oder Rechnung", "Automatische Nummernvergabe pro Typ", "Kunde und Projekt zuordnen", "Faelligkeitsdatum und Zahlungsziel setzen"],
-            },
-            {
-                heading: "Positions-Editor",
-                text: "Fuegen Sie beliebig viele Positionen hinzu. Jede Position hat Beschreibung, Menge, Einheit (m2, Stunde, pauschal, lfdm) und Einzelpreis. Der Gesamtpreis berechnet sich automatisch. Positionen koennen direkt aus dem Leistungskatalog uebernommen werden.",
-                bullets: ["Unbegrenzte Positionen pro Dokument", "Automatische Berechnung: Netto, Rabatt, MwSt., Brutto", "Einheiten: m2, Stunde, Stueck, pauschal, Meter, lfdm", "Ein-Klick-Import aus dem Leistungskatalog"],
-            },
-            {
-                heading: "Zahlung & Status",
-                text: "Rechnungen koennen als vollstaendig oder teilweise bezahlt markiert werden. Das System berechnet den offenen Betrag automatisch und aktualisiert den Status. Bezahlte Rechnungen werden automatisch dem Kunden- und Projektumsatz zugerechnet.",
-                bullets: ["Voll- und Teilzahlung buchen", "Automatischer Statuswechsel bei vollstaendiger Zahlung", "Offener Betrag wird live berechnet", "Umsatz wird Kunde und Projekt zugeordnet"],
-            },
-        ],
-    },
-    {
-        id: "mahnwesen",
-        icon: AlertTriangle,
-        title: "Automatisches Mahnwesen",
-        subtitle: "Ueberfaellige Forderungen nie wieder uebersehen",
-        color: "amber",
-        sections: [
-            {
-                heading: "Automatische Erkennung",
-                text: "Das System erkennt automatisch alle Rechnungen, deren Faelligkeitsdatum ueberschritten ist. In der Mahnuebersicht sehen Sie sofort: Welcher Kunde schuldet wie viel, seit wie vielen Tagen ist die Rechnung ueberfaellig, und welche Mahnstufe wurde bereits erreicht.",
-                bullets: ["Echtzeit-Erkennung ueberfaelliger Rechnungen", "Tage-Zaehler seit Faelligkeitsdatum", "Gesamtbetrag offener Forderungen auf einen Blick"],
-            },
-            {
-                heading: "3-Stufen-Mahnsystem",
-                text: "Mahnen Sie einzelne Rechnungen manuell oder nutzen Sie die Auto-Mahnung fuer alle ueberfaelligen Rechnungen gleichzeitig. Die Mahnstufe wird automatisch hochgesetzt (max. 3 Stufen). Bei Stufe 3 wird die Maximalgrenze erreicht.",
-                bullets: ["Stufe 1: Zahlungserinnerung", "Stufe 2: Erste Mahnung", "Stufe 3: Letzte Mahnung (Inkasso-Vorbereitung)", "Auto-Mahnung: Alle auf einmal hochstufen"],
-            },
-        ],
-    },
-    {
-        id: "projekte",
-        icon: Briefcase,
-        title: "Projektverwaltung",
-        subtitle: "Budget, Fortschritt und Team pro Baustelle",
-        color: "purple",
-        sections: [
-            {
-                heading: "Projekt anlegen",
-                text: "Erstellen Sie ein Projekt mit Name, Kunde, Adresse und Budget. Definieren Sie Start- und Enddatum. Weisen Sie Mitarbeiter per Klick dem Projektteam zu. Jedes Projekt erhaelt eine eigene Farbe fuer die visuelle Zuordnung in der Plantafel.",
-                bullets: ["Kunde und Adresse zuordnen", "Budget und Zeitraum festlegen", "Team aus Mitarbeiterliste zusammenstellen", "Farbliche Codierung fuer Plantafel"],
-            },
-            {
-                heading: "Automatische Verrechnung",
-                text: "Alle Rechnungen, die einem Projekt zugeordnet sind, werden automatisch summiert. Auf der Projektkarte sehen Sie: Budget vs. fakturiert vs. bezahlt. So erkennen Sie sofort, ob ein Projekt im Budget liegt oder ueberschritten wird.",
-                bullets: ["Budget vs. fakturierter Betrag", "Bezahlter Betrag pro Projekt", "Fortschrittsbalken mit Prozentwert", "Statusfilter: Planung, Aktiv, Abgeschlossen"],
-            },
-        ],
+        subtitle: "Präzise Dokumente in sekundenschnelle",
+        description: "Vom ersten Angebot bis zur finalen Rechnung – erstellen Sie professionelle Dokumente, die Kunden überzeugen. Automatisierte Nummernkreise und Kalkulationen eliminieren Fehlerquellen vollständig.",
+        UI: InvoiceUI,
+        features: [
+            { title: "Positions-Editor", text: "Fügen Sie Leistungen direkt aus dem Katalog ein. MwSt. und Gesamtsummen werden live berechnet.", icon: Zap },
+            { title: "Integrierter Katalog", text: "Greifen Sie auf Ihre Stammleistungen zu und sparen Sie bei jedem Beleg wertvolle Tipparbeit.", icon: Database },
+            { title: "Status-Workflow", text: "Verfolgen Sie den Weg jedes Dokuments: Vom Entwurf über 'Gesendet' bis 'Bezahlt'.", icon: Clock }
+        ]
     },
     {
         id: "plantafel",
         icon: CalendarRange,
-        title: "Plantafel",
-        subtitle: "Visueller Wochenplan mit Konflikterkennung",
-        color: "cyan",
-        sections: [
-            {
-                heading: "Wochenansicht",
-                text: "Die Plantafel zeigt Montag bis Freitag in Spalten, alle Mitarbeiter in Zeilen. Zugewiesene Projekte erscheinen als farbige Bloecke. Der aktuelle Tag wird blau hervorgehoben. Navigieren Sie mit Pfeiltasten wochenweise.",
-                bullets: ["5-Tage-Wochenansicht (Mo-Fr)", "Mitarbeiter als Zeilen", "Farbcodierte Projektzuordnung", "Hervorhebung des aktuellen Tages"],
-            },
-            {
-                heading: "Konflikterkennung",
-                text: "Wenn ein Mitarbeiter an einem Tag mehreren Projekten zugeordnet ist, wird der Block rot markiert mit dem Hinweis 'Konflikt'. So vermeiden Sie Doppelbelegungen und Planungsfehler.",
-                bullets: ["Automatische Konflikterkennung", "Rote Markierung bei Doppelbelegung", "Legende mit allen aktiven Projekten"],
-            },
-        ],
-    },
-    {
-        id: "zeiten",
-        icon: Clock,
-        title: "Zeiterfassung",
-        subtitle: "Live-Timer, Stundenzettel und Genehmigungen",
-        color: "emerald",
-        sections: [
-            {
-                heading: "Live-Timer",
-                text: "Waehlen Sie einen Mitarbeiter und ein Projekt, dann starten Sie den Timer mit einem Klick. Die Uhr zaehlt in Echtzeit. Beim Stoppen wird der Zeiteintrag automatisch mit Start- und Endzeit gespeichert.",
-                bullets: ["Ein-Klick-Timer starten/stoppen", "Mitarbeiter und Projekt zuordnen", "Automatische Dauer-Berechnung", "Eintrag sofort im System gespeichert"],
-            },
-            {
-                heading: "Manuelle Erfassung & Export",
-                text: "Erfassen Sie Zeiten nachtraeglich: Datum, Von/Bis, Typ (Arbeit, Fahrt, Pause, Urlaub, Krankheit) und Beschreibung. Alle Eintraege koennen als CSV exportiert werden fuer die Lohnbuchhaltung.",
-                bullets: ["5 Zeittypen: Arbeit, Fahrt, Pause, Urlaub, Krankheit", "Genehmigungsworkflow fuer Vorgesetzte", "CSV-Export fuer Lohnbuchhaltung", "Summen pro Mitarbeiter und Projekt"],
-            },
-        ],
-    },
-    {
-        id: "kunden",
-        icon: Users,
-        title: "Kundenverwaltung",
-        subtitle: "Stammdaten, Umsatz und Dokumente pro Kunde",
-        color: "indigo",
-        sections: [
-            {
-                heading: "Kundenprofil",
-                text: "Legen Sie Kunden an mit Name, Typ (Gewerblich, Privat, Stammkunde), E-Mail, Telefon und Adresse. Definieren Sie individuelle Zahlungsziele. Interne Notizen helfen bei der Kundenbetreuung.",
-                bullets: ["3 Kundentypen: Gewerblich, Privat, Stammkunde", "Kontaktdaten: E-Mail, Telefon, Adresse", "Individuelles Zahlungsziel (Tage)", "Interne Notizen"],
-            },
-            {
-                heading: "Automatische Umsatzberechnung",
-                text: "Auf jeder Kundenkarte sehen Sie automatisch: Gesamtumsatz (aus bezahlten Rechnungen), Anzahl der Dokumente und Anzahl der Projekte. Die Live-Suche filtert sofort nach Kundenname.",
-                bullets: ["Gesamtumsatz pro Kunde (automatisch)", "Anzahl Dokumente und Projekte", "Live-Suche nach Name", "Bearbeiten und Loeschen per Hover-Aktion"],
-            },
-        ],
+        title: "Visuelle Plantafel",
+        subtitle: "Optimale Auslastung per Drag & Drop",
+        description: "Koordinieren Sie Ihr Team mit chirurgischer Präzision. Unsere visuelle Plantafel erkennt Planungskonflikte automatisch und sorgt für eine reibungslose Baustellenabwicklung.",
+        UI: PlantafelUI,
+        features: [
+            { title: "Konflikt-Warner", text: "Das System meldet rote Warnungen, wenn Mitarbeiter doppelt verplant werden.", icon: ShieldCheck },
+            { title: "Projekt-Farbcode", text: "Jede Baustelle hat ihre eigene Farbe – für maximale Übersicht im Wochenplan.", icon: Briefcase },
+            { title: "Team-Fokus", text: "Sehen Sie sofort, wer auf welcher Baustelle eingeteilt ist und wo Kapazitäten frei sind.", icon: Users }
+        ]
     },
     {
         id: "mitarbeiter",
-        icon: Users,
-        title: "Mitarbeiterverwaltung",
-        subtitle: "Profile mit Zugangsdaten und Verguetung",
-        color: "pink",
-        sections: [
-            {
-                heading: "Mitarbeiterprofil",
-                text: "Erstellen Sie vollstaendige Profile: Vorname, Nachname, Rolle, E-Mail und Passwort fuer den Systemzugang. Jeder Mitarbeiter erhaelt ein farbcodiertes Avatar fuer die Plantafel und Projektteams.",
-                bullets: ["E-Mail und Passwort fuer Systemzugang", "Rolle und Qualifikationen (Skills)", "Farbcodiertes Avatar", "Aktiv/Inaktiv-Status"],
-            },
-            {
-                heading: "Verguetung",
-                text: "Definieren Sie Stundensatz UND pauschales Monatsgehalt. Waehlen Sie den Vertragstyp: Vollzeit, Teilzeit, Minijob oder Freelancer. Erfasste Stunden werden automatisch summiert und pro Mitarbeiter angezeigt.",
-                bullets: ["Stundensatz (EUR pro Stunde)", "Pauschales Monatsgehalt", "4 Vertragstypen: Vollzeit, Teilzeit, Minijob, Freelancer", "Automatische Stundenauswertung"],
-            },
-        ],
-    },
-    {
-        id: "katalog",
-        icon: Wrench,
-        title: "Leistungskatalog",
-        subtitle: "Stammleistungen fuer schnelle Dokumenterstellung",
-        color: "orange",
-        sections: [
-            {
-                heading: "Leistungen definieren",
-                text: "Legen Sie Ihre haeufigsten Leistungen einmal an: Name, Kategorie, Einheit und Preis. Beim Erstellen von Angeboten oder Rechnungen koennen Sie Positionen mit einem Klick aus dem Katalog uebernehmen.",
-                bullets: ["Name, Kategorie und Beschreibung", "7 Einheiten: m2, Stunde, Stueck, pauschal, Meter, lfdm, Liter", "Preis pro Einheit festlegen", "Ein-Klick-Import in Dokumente"],
-            },
-        ],
-    },
-    {
-        id: "dashboard",
-        icon: BarChart3,
-        title: "Dashboard",
-        subtitle: "Alle Kennzahlen auf einen Blick",
-        color: "emerald",
-        sections: [
-            {
-                heading: "Vier Kennzahlen",
-                text: "Das Dashboard zeigt die vier wichtigsten Werte: Bezahlter Umsatz, offene Forderungen (mit Anzahl ueberfaelliger), aktive Projekte und offene Angebote mit Gesamtvolumen.",
-                bullets: ["Umsatz: Summe aller bezahlten Rechnungen", "Offene Forderungen: mit Ueberfaellig-Zaehler", "Aktive Projekte: mit Planungs-Zaehler", "Offene Angebote: mit Volumen"],
-            },
-            {
-                heading: "Handlungsbedarf",
-                text: "Im Bereich 'Handlungsbedarf' werden ueberfaellige Rechnungen automatisch mit Tagen und offenem Betrag angezeigt. So wird nichts vergessen. Zusaetzlich sehen Sie die 5 aktuellsten Dokumente und alle aktiven Projekte mit Fortschrittsbalken.",
-                bullets: ["Ueberfaellige Rechnungen hervorgehoben", "Aktuelle Dokumente mit Status", "Aktive Projekte mit Fortschritt", "Ein Klick fuehrt zum jeweiligen Modul"],
-            },
-        ],
-    },
+        icon: UserCheck,
+        title: "Team & Zeiterfassung",
+        subtitle: "Digitale Profile und transparente Stunden",
+        description: "Verwalten Sie Ihr Team modern und fair. Jedes Teammitglied hat ein eigenes Profil mit Qualifikationen, Gehaltsdaten und einer lückenlosen Zeiterfassung pro Projekt.",
+        UI: EmployeeUI,
+        features: [
+            { title: "Präzise Abrechnung", text: "Hinterlegen Sie individuelle Stundensätze für eine exakte Nachkalkulation.", icon: Lock },
+            { title: "Skill-Management", text: "Finden Sie sofort den richtigen Experten für das Projekt basierend auf hinterlegten Kompetenzen.", icon: Award },
+            { title: "Standortbezogen", text: "Zuordnung von Arbeitszeiten zu Baustellenadressen für perfekte Transparenz.", icon: MapPin }
+        ]
+    }
 ];
 
-const Mockup = ({ type }: { type: string }) => {
-    if (type === "dashboard") return (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden p-4 shadow-2xl scale-[0.85] lg:scale-100 origin-top">
-            <div className="flex gap-2 mb-4">
-                {[1, 2, 3].map(i => <div key={i} className="flex-1 h-32 bg-slate-800/50 rounded-lg border border-slate-700/50" />)}
-            </div>
-            <div className="h-40 bg-slate-800/50 rounded-lg border border-slate-700/50 flex flex-col p-3 gap-2">
-                <div className="w-1/3 h-4 bg-slate-700 rounded" />
-                <div className="flex-1 border-b border-slate-700/50" />
-                <div className="flex-1 border-b border-slate-700/50" />
-                <div className="flex-1 border-b border-slate-700/50" />
-            </div>
-        </div>
-    );
-    if (type === "dokumente") return (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden p-4 shadow-2xl scale-[0.85] lg:scale-100 origin-top">
-            <div className="flex justify-between mb-4 border-b border-slate-800 pb-2">
-                <div className="w-24 h-4 bg-blue-500/20 rounded" />
-                <div className="w-20 h-4 bg-slate-800 rounded" />
-            </div>
-            <div className="space-y-2 mb-4">
-                <div className="flex justify-between"><div className="w-1/2 h-4 bg-slate-800 rounded" /><div className="w-12 h-4 bg-blue-500/20 rounded" /></div>
-                <div className="flex justify-between"><div className="w-1/3 h-4 bg-slate-800 rounded" /><div className="w-10 h-4 bg-blue-500/20 rounded" /></div>
-            </div>
-            <div className="pt-2 border-t border-slate-800 text-[10px] text-slate-500 flex justify-between">
-                <span>Gesamtbetrag</span>
-                <span className="text-blue-400 font-bold">1.240,50 €</span>
-            </div>
-        </div>
-    );
-    if (type === "zeiten") return (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden p-3 shadow-2xl scale-[0.85] lg:scale-100 origin-top">
-            <div className="flex items-center gap-3 p-3 bg-blue-600/10 rounded-lg border border-blue-500/20 mb-3">
-                <div className="w-8 h-8 rounded-full bg-blue-500 border-2 border-blue-400 animate-pulse" />
-                <div className="flex-1">
-                    <div className="text-xs font-bold text-white">Timer läuft...</div>
-                    <div className="text-[10px] text-blue-400">02:45:12</div>
-                </div>
-                <div className="w-6 h-6 rounded bg-red-500" />
-            </div>
-            <div className="space-y-1">
-                {[1, 2].map(i => <div key={i} className="h-8 bg-slate-800/50 rounded border border-slate-800" />)}
-            </div>
-        </div>
-    );
-    return (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden p-4 shadow-2xl flex flex-col gap-2 scale-[0.85] lg:scale-100 origin-top">
-            <div className="h-6 w-1/4 bg-slate-800 rounded" />
-            <div className="flex-1 border-t border-slate-800 pt-2 flex flex-col gap-2">
-                {[1, 2, 3].map(i => <div key={i} className="h-8 w-full bg-slate-800/50 rounded" />)}
-            </div>
-        </div>
-    );
-};
-
 export default function FunktionenPage() {
-    const [expandedModule, setExpandedModule] = useState<string | null>("dokumente");
+    const [activeMod, setActiveMod] = useState(modules[0].id);
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-200 selection:bg-blue-500/30">
-            {/* Header */}
-            <header className="fixed top-0 w-full z-50 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl">
-                <div className="max-w-6xl mx-auto flex items-center justify-between px-5 sm:px-8 h-16">
-                    <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                        <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center font-display font-extrabold text-white text-[13px] shadow-lg shadow-blue-500/20">HP</div>
-                        <span className="font-display text-lg font-extrabold text-white tracking-tight">Handwerk<span className="text-blue-500">Pro</span></span>
+        <div className="min-h-screen bg-slate-950 text-slate-200 selection:bg-blue-500/30 font-sans">
+            {/* Nav */}
+            <header className="fixed top-0 w-full z-[100] border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-2xl">
+                <div className="max-w-7xl mx-auto flex items-center justify-between px-6 sm:px-10 h-20">
+                    <Link href="/" className="flex items-center gap-4 transition-transform hover:scale-105">
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-2xl shadow-blue-500/30">HP</div>
+                        <span className="font-black text-xl text-white tracking-tighter">Handwerk<span className="text-blue-500">Pro</span></span>
                     </Link>
-                    <div className="flex items-center gap-3">
-                        <Link href="/" className="hidden sm:flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors font-medium"><ArrowLeft className="w-4 h-4" /> Zurück</Link>
-                        <Link href="/login" className="text-sm bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-2.5 rounded-xl transition-all shadow-lg shadow-blue-500/25 active:scale-95">Kostenlos testen</Link>
-                    </div>
+                    <Link href="/login" className="hidden sm:flex bg-blue-600 hover:bg-blue-500 text-white font-black text-sm px-8 py-3 rounded-2xl transition-all shadow-xl shadow-blue-500/25 items-center gap-2 group">
+                        Live Demo starten <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
                 </div>
             </header>
 
             {/* Hero */}
-            <section className="pt-28 sm:pt-36 pb-12 px-6 text-center max-w-4xl mx-auto">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full text-[10px] font-bold text-blue-400 uppercase tracking-widest mb-6">Dokumentation</div>
-                <h1 className="font-display text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-6 leading-tight">
-                    Alle Funktionen <span className="text-blue-500">im Detail</span>
+            <section className="pt-40 pb-20 px-6 max-w-5xl mx-auto text-center">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full text-[10px] font-black text-blue-400 uppercase tracking-[0.3em] mb-8 animate-in fade-in slide-in-from-bottom-2 duration-700">Explainer Guide</div>
+                <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight mb-8 leading-[1.1] animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+                    Smarte Funktionen für Ihr <span className="bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">Handwerk</span>
                 </h1>
-                <p className="text-slate-400 text-base sm:text-lg leading-relaxed mb-10">
-                    Entdecken Sie, wie HandwerkPro Ihren Arbeitsalltag vereinfacht. Von der ersten Kalkulation bis zur fertigen Mahnung – alles in einer Hand.
+                <p className="text-slate-400 text-lg sm:text-xl leading-relaxed max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200">
+                    Wir haben HandwerkPro so entwickelt, dass es sich Ihrem Arbeitsalltag anpasst – nicht umgekehrt. Entdecken Sie die Werkzeuge von morgen.
                 </p>
-                <div className="flex flex-wrap justify-center gap-2">
+            </section>
+
+            {/* Feature Tabs */}
+            <section className="px-6 pb-32 max-w-7xl mx-auto">
+                <div className="flex flex-wrap justify-center gap-3 mb-16">
                     {modules.map((m) => (
                         <button
                             key={m.id}
-                            onClick={() => { setExpandedModule(m.id); document.getElementById(m.id)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
-                            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] sm:text-xs font-bold border transition-all ${expandedModule === m.id ? "bg-blue-500/15 border-blue-500/30 text-blue-400 ring-2 ring-blue-500/10" : "border-slate-800 text-slate-500 hover:text-white hover:border-slate-700"}`}
+                            onClick={() => setActiveMod(m.id)}
+                            className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest border transition-all duration-300 ${activeMod === m.id ? "bg-blue-600 border-blue-600 text-white shadow-2xl shadow-blue-500/30 -translate-y-1" : "bg-slate-900 border-slate-800 text-slate-500 hover:text-white hover:border-slate-700"}`}
                         >
-                            <m.icon className="w-3.5 h-3.5" /> {m.title}
+                            <m.icon className="w-4 h-4" /> {m.title}
                         </button>
                     ))}
                 </div>
-            </section>
 
-            {/* Modules */}
-            <div className="max-w-5xl mx-auto px-5 sm:px-8 pb-32 space-y-8">
-                {modules.map((mod) => {
-                    const isOpen = expandedModule === mod.id;
+                {/* Active Content */}
+                {modules.map((m) => {
+                    if (m.id !== activeMod) return null;
                     return (
-                        <div key={mod.id} id={mod.id} className={`glass rounded-3xl overflow-hidden scroll-mt-24 transition-all duration-500 ${isOpen ? "ring-2 ring-blue-500/20 border-blue-500/20" : "hover:border-slate-700/60"}`}>
-                            <button
-                                onClick={() => setExpandedModule(isOpen ? null : mod.id)}
-                                className="w-full flex items-center justify-between px-6 sm:px-10 py-6 sm:py-8 text-left hover:bg-slate-800/10 transition-colors"
-                            >
-                                <div className="flex items-center gap-5 sm:gap-6">
-                                    <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center flex-shrink-0 transition-colors ${isOpen ? "bg-blue-500/20" : "bg-slate-800/50"}`}>
-                                        <mod.icon className={`w-6 h-6 sm:w-7 sm:h-7 ${isOpen ? "text-blue-400" : "text-slate-400"}`} />
+                        <div key={m.id} className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center animate-in fade-in zoom-in-95 duration-500">
+                            {/* Visual Side */}
+                            <div className="relative group">
+                                <div className="absolute -inset-4 bg-blue-500/10 rounded-[2.5rem] blur-3xl group-hover:bg-blue-500/20 transition-all duration-700" />
+                                <div className="relative transform group-hover:scale-[1.02] transition-transform duration-700">
+                                    <div className="p-2 border border-slate-800/60 bg-slate-900/50 rounded-[2.5rem] shadow-3xl">
+                                        <m.UI />
                                     </div>
-                                    <div>
-                                        <h2 className="text-lg sm:text-2xl font-bold text-white tracking-tight">{mod.title}</h2>
-                                        <p className="text-xs sm:text-sm text-slate-500 mt-1">{mod.subtitle}</p>
-                                    </div>
-                                </div>
-                                <div className={`w-10 h-10 rounded-full border border-slate-800 flex items-center justify-center transition-all ${isOpen ? "rotate-180 border-blue-500/30 text-blue-400" : "text-slate-500"}`}>
-                                    <ChevronDown className="w-5 h-5" />
-                                </div>
-                            </button>
-
-                            {isOpen && (
-                                <div className="px-6 sm:px-10 pb-10 space-y-12 animate-in fade-in slide-in-from-top-4 duration-500">
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center border-t border-slate-800/60 pt-10">
-                                        <div className="space-y-6 order-2 lg:order-1">
-                                            {mod.sections.map((section, i) => (
-                                                <div key={i} className="space-y-4">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="w-6 h-6 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                                                            <span className="text-[11px] font-bold text-blue-400">{i + 1}</span>
-                                                        </div>
-                                                        <h3 className="text-base font-bold text-white tracking-tight">{section.heading}</h3>
-                                                    </div>
-                                                    <p className="text-sm sm:text-base text-slate-400 leading-relaxed pl-9">
-                                                        {section.text}
-                                                    </p>
-                                                    <div className="pl-9">
-                                                        <ul className="grid grid-cols-1 gap-x-6 gap-y-2 mt-2">
-                                                            {section.bullets.map((b, j) => (
-                                                                <li key={j} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-300">
-                                                                    <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
-                                                                    {b}
-                                                                </li>
-                                                            ))}
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            ))}
+                                    <div className="absolute -bottom-6 -right-6 glass p-4 rounded-2xl border border-blue-500/20 shadow-2xl animate-bounce-subtle">
+                                        <div className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-1">Live Software View</div>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                            <span className="text-[11px] text-white font-bold italic">HandwerkPro v1.4</span>
                                         </div>
-                                        <div className="order-1 lg:order-2">
-                                            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
-                                                <div className="w-2 h-2 rounded-full bg-emerald-500" /> Auszug aus dem Programm
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Text Side */}
+                            <div className="space-y-10">
+                                <div>
+                                    <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 tracking-tight leading-tight">{m.title}</h2>
+                                    <p className="text-blue-500 font-black text-sm uppercase tracking-[0.2em] mb-6">{m.subtitle}</p>
+                                    <p className="text-slate-400 text-lg leading-relaxed">{m.description}</p>
+                                </div>
+
+                                <div className="grid grid-cols-1 gap-6">
+                                    {m.features.map((f, i) => (
+                                        <div key={i} className="flex gap-5 group/feat">
+                                            <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center flex-shrink-0 group-hover/feat:border-blue-500/50 group-hover/feat:bg-blue-500/5 transition-all duration-300">
+                                                <f.icon className="w-5 h-5 text-blue-400" />
                                             </div>
-                                            <Mockup type={mod.id} />
+                                            <div>
+                                                <h4 className="text-white font-black text-base mb-1 group-hover/feat:text-blue-400 transition-colors">{f.title}</h4>
+                                                <p className="text-slate-500 text-sm leading-relaxed">{f.text}</p>
+                                            </div>
                                         </div>
-                                    </div>
-
-                                    <div className="flex flex-wrap items-center gap-4 pt-8 border-t border-slate-800/40">
-                                        <Link href="/login" className="flex items-center gap-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-95">
-                                            Jetzt ausprobieren <ArrowRight className="w-4 h-4" />
-                                        </Link>
-                                        <div className="flex flex-col">
-                                            <span className="text-xs font-bold text-white">30 Tage kostenlos</span>
-                                            <span className="text-[11px] text-slate-500">Voller Funktionsumfang, keine Kreditkarte benötigt</span>
-                                        </div>
-                                    </div>
+                                    ))}
                                 </div>
-                            )}
+
+                                <div className="pt-8 flex flex-wrap items-center gap-6">
+                                    <Link href="/login" className="bg-white text-slate-950 px-8 py-4 rounded-2xl font-black text-sm hover:bg-slate-200 transition-all shadow-xl active:scale-95">
+                                        Diese Funktion testen
+                                    </Link>
+                                    <div className="flex -space-x-3">
+                                        {[1, 2, 3, 4].map(i => (
+                                            <div key={i} className="w-10 h-10 rounded-full border-4 border-slate-950 bg-slate-800 flex items-center justify-center text-[10px] font-bold text-white shadow-lg">U{i}</div>
+                                        ))}
+                                        <div className="w-10 h-10 rounded-full border-4 border-slate-950 bg-blue-600 flex items-center justify-center text-[10px] font-black text-white">+8k</div>
+                                    </div>
+                                    <span className="text-xs text-slate-500 font-bold">Nutzen diese Funktion täglich</span>
+                                </div>
+                            </div>
                         </div>
                     );
                 })}
-            </div>
+            </section>
+
+            {/* Dynamic CTA */}
+            <section className="bg-gradient-to-b from-slate-950 to-blue-900/10 py-32 px-6">
+                <div className="max-w-4xl mx-auto glass p-10 sm:p-20 rounded-[3rem] border border-blue-500/20 text-center relative overflow-hidden shadow-3xl">
+                    <div className="absolute top-0 right-0 p-10 opacity-10"><Zap className="w-40 h-40 text-blue-500" /></div>
+                    <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight mb-8">Bereit für ein Upgrade?</h2>
+                    <p className="text-slate-400 text-lg mb-12 max-w-xl mx-auto">Digitalisieren Sie Ihren Betrieb noch heute. 30 Tage lang kostenlos, ohne Verpflichtungen.</p>
+                    <div className="flex flex-wrap justify-center gap-4">
+                        <Link href="/login" className="bg-blue-600 hover:bg-blue-500 text-white px-10 py-5 rounded-2xl font-black text-base shadow-2xl shadow-blue-500/30 transition-all active:scale-95">
+                            Jetzt kostenlos starten
+                        </Link>
+                        <Link href="/support" className="bg-slate-800 hover:bg-slate-700 text-white px-10 py-5 rounded-2xl font-black text-base border border-slate-700 transition-all">
+                            Beratungsgespräch
+                        </Link>
+                    </div>
+                </div>
+            </section>
 
             {/* Footer */}
-            <footer className="border-t border-slate-800/60 py-12 px-6">
-                <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 text-sm text-slate-500">
-                    <div className="flex items-center gap-6">
-                        <span className="font-bold text-slate-400 tracking-tight">&copy; {new Date().getFullYear()} HandwerkPro</span>
-                        <Link href="/login" className="hover:text-white transition-colors">Login</Link>
-                        <Link href="/register" className="hover:text-white transition-colors">Registrieren</Link>
+            <footer className="border-t border-slate-900 py-16 px-6">
+                <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 text-sm">
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-black text-white text-[10px]">HP</div>
+                            <span className="font-black text-white tracking-tight">HandwerkPro</span>
+                        </div>
+                        <p className="text-slate-500 leading-relaxed font-medium">Die führende SaaS-Lösung für moderne Handwerksbetriebe. Effizienz, Transparenz und Erfolg in einem System.</p>
                     </div>
-                    <Link href="/" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-slate-800 hover:border-slate-700 hover:bg-slate-900 transition-all font-medium">
-                        <ArrowLeft className="w-4 h-4" /> Zur Startseite
-                    </Link>
+                    <div className="grid grid-cols-2 col-span-2 gap-10">
+                        <div className="space-y-4">
+                            <h4 className="font-black text-white uppercase tracking-widest text-[11px]">Produkt</h4>
+                            <ul className="space-y-2 text-slate-500 font-bold">
+                                <li><Link href="/" className="hover:text-blue-400 transition-colors">Startseite</Link></li>
+                                <li><Link href="/funktionen" className="text-blue-500">Funktionen</Link></li>
+                                <li><Link href="/login" className="hover:text-blue-400 transition-colors">Preise</Link></li>
+                            </ul>
+                        </div>
+                        <div className="space-y-4">
+                            <h4 className="font-black text-white uppercase tracking-widest text-[11px]">Rechtliches</h4>
+                            <ul className="space-y-2 text-slate-500 font-bold">
+                                <li><Link href="/impressum" className="hover:text-blue-400 transition-colors">Impressum</Link></li>
+                                <li><Link href="/datenschutz" className="hover:text-blue-400 transition-colors">Datenschutz</Link></li>
+                                <li><Link href="/support" className="hover:text-blue-400 transition-colors">Support</Link></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-slate-900 flex justify-between items-center text-[11px] font-bold text-slate-600">
+                    <span>&copy; {new Date().getFullYear()} HandwerkPro. Alle Rechte vorbehalten.</span>
+                    <span className="flex items-center gap-2">Made with <Zap className="w-3 h-3 text-blue-500" /> for pros</span>
                 </div>
             </footer>
         </div>

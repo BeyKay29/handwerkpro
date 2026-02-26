@@ -31,6 +31,7 @@ const navigation = [
     { name: "Kunden", href: "/kunden", icon: Users },
     { name: "Mitarbeiter", href: "/mitarbeiter", icon: UsersRound },
     { name: "Leistungskatalog", href: "/leistungen", icon: Wrench },
+    { name: "Vorlagen", href: "/vorlagen", icon: FileText },
 ];
 
 // Sidebar context so layout can read collapsed state

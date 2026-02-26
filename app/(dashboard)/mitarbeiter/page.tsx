@@ -6,6 +6,7 @@ import Modal from "@/components/ui/modal";
 import { formatCurrency } from "@/lib/utils";
 import { Plus, Pencil, Trash2, Mail, Phone, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 import { Employee, ContractType } from "@/types";
 
 const COLORS = ["#3b82f6", "#10b981", "#8b5cf6", "#f59e0b", "#ec4899", "#06b6d4", "#f97316"];
@@ -85,7 +86,7 @@ export default function MitarbeiterPage() {
                 {store.employees.map((m) => {
                     const hours = store.timeEntries.filter((t) => t.employee_id === m.id).reduce((s, t) => s + t.duration, 0);
                     return (
-                        <div key={m.id} className="glass rounded-2xl p-5 hover:border-slate-700/60 transition-all duration-300 group space-y-4">
+                        <Link href={`/mitarbeiter/${m.id}`} key={m.id} className="glass rounded-2xl p-5 hover:border-blue-500/50 transition-all duration-300 group space-y-4 block cursor-pointer">
                             {/* Header */}
                             <div className="flex items-start justify-between">
                                 <div className="flex items-center gap-3">
@@ -98,8 +99,8 @@ export default function MitarbeiterPage() {
                                     </div>
                                 </div>
                                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button onClick={() => openEdit(m)} className="w-6 h-6 rounded border border-slate-700 hover:border-blue-500 flex items-center justify-center text-slate-500 hover:text-blue-400 transition-colors bg-slate-900"><Pencil className="w-2.5 h-2.5" /></button>
-                                    <button onClick={() => handleDelete(m.id, `${m.first_name} ${m.last_name}`)} className="w-6 h-6 rounded border border-slate-700 hover:border-red-500 flex items-center justify-center text-slate-500 hover:text-red-400 transition-colors bg-slate-900"><Trash2 className="w-2.5 h-2.5" /></button>
+                                    <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); openEdit(m); }} className="w-7 h-7 rounded bg-slate-900 border border-slate-700 hover:border-blue-500 flex items-center justify-center text-slate-500 hover:text-blue-400 transition-colors"><Pencil className="w-3 h-3" /></button>
+                                    <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDelete(m.id, `${m.first_name} ${m.last_name}`); }} className="w-7 h-7 rounded bg-slate-900 border border-slate-700 hover:border-red-500 flex items-center justify-center text-slate-500 hover:text-red-400 transition-colors"><Trash2 className="w-3 h-3" /></button>
                                 </div>
                             </div>
 
@@ -132,9 +133,10 @@ export default function MitarbeiterPage() {
                             {/* Skills */}
                             {(m.skills || []).length > 0 && (
                                 <div className="flex flex-wrap gap-1">
-                                    {m.skills.map((s) => (
+                                    {m.skills.slice(0, 3).map((s) => (
                                         <span key={s} className="px-2 py-0.5 bg-slate-800/80 rounded-full text-[10px] font-semibold text-slate-400">{s}</span>
                                     ))}
+                                    {m.skills.length > 3 && <span className="text-[10px] text-slate-600 font-bold">+{m.skills.length - 3}</span>}
                                 </div>
                             )}
 
@@ -146,14 +148,14 @@ export default function MitarbeiterPage() {
                                 </div>
                                 <div className="text-center">
                                     <div className="text-[13px] font-bold text-white">{m.monthly_salary ? formatCurrency(m.monthly_salary) : "\u2014"}</div>
-                                    <div className="text-[10px] text-slate-500">/ Monat</div>
+                                    <div className="text-[10px] text-slate-500">Pauschal</div>
                                 </div>
                                 <div className="text-center">
                                     <div className="text-[13px] font-bold text-white">{hours.toFixed(1)}h</div>
                                     <div className="text-[10px] text-slate-500">erfasst</div>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     );
                 })}
             </div>

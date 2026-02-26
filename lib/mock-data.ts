@@ -12,19 +12,19 @@ function plus(n: number): string {
 }
 
 export const mockCustomers: Customer[] = [
-    { id: "c1", company_id: "co1", name: "Muller GmbH", type: "Gewerblich", email: "info@mueller.de", phone: "06221/48200", address: "Hauptstrasse 12, 69115 Heidelberg", payment_terms: 30, credit_limit: 50000, notes: "Stammkunde seit 2018", created_at: ago(400) },
-    { id: "c2", company_id: "co1", name: "Schafer KG", type: "Gewerblich", email: "kontakt@schaefer-kg.de", phone: "06221/33100", address: "Industrieweg 5, 69120 Heidelberg", payment_terms: 14, credit_limit: 20000, created_at: ago(200) },
-    { id: "c3", company_id: "co1", name: "Weber Immobilien", type: "Gewerblich", email: "info@weber-immo.de", phone: "06222/55800", address: "Romerstrasse 8, 69151 Neckargemund", payment_terms: 30, credit_limit: 30000, created_at: ago(150) },
-    { id: "c4", company_id: "co1", name: "Max Mustermann", type: "Privat", email: "max@gmail.com", phone: "0176/12345678", address: "Gartenweg 3, 69124 Heidelberg", payment_terms: 14, credit_limit: 5000, created_at: ago(90) },
-    { id: "c5", company_id: "co1", name: "Hoffmann Verwaltung", type: "Stammkunde", email: "info@hoffmann-vw.de", phone: "06221/72900", address: "Schillerstrasse 20, 69115 Heidelberg", payment_terms: 14, credit_limit: 25000, notes: "Jahresvertrag", created_at: ago(500) },
+    { id: "c1", company_id: "co1", name: "Müller GmbH", type: "Gewerblich", contact_person: "Hans Müller", email: "info@mueller.de", phone: "06221/48200", address: "Hauptstrasse 12, 69115 Heidelberg", notes: "Stammkunde seit 2018", created_at: ago(400) },
+    { id: "c2", company_id: "co1", name: "Schäfer KG", type: "Gewerblich", contact_person: "Dr. Schäfer", email: "kontakt@schaefer-kg.de", phone: "06221/33100", address: "Industrieweg 5, 69120 Heidelberg", created_at: ago(200) },
+    { id: "c3", company_id: "co1", name: "Weber Immobilien", type: "Gewerblich", contact_person: "Petra Weber", email: "info@weber-immo.de", phone: "06222/55800", address: "Römerstrasse 8, 69151 Neckargemünd", created_at: ago(150) },
+    { id: "c4", company_id: "co1", name: "Max Mustermann", type: "Privat", contact_person: "Max Mustermann", email: "max@gmail.com", phone: "0176/12345678", address: "Gartenweg 3, 69124 Heidelberg", created_at: ago(90) },
+    { id: "c5", company_id: "co1", name: "Hoffmann Verwaltung", type: "Stammkunde", contact_person: "H. Hoffmann", email: "info@hoffmann-vw.de", phone: "06221/72900", address: "Schillerstrasse 20, 69115 Heidelberg", notes: "Jahresvertrag", created_at: ago(500) },
 ];
 
 export const mockEmployees: Employee[] = [
-    { id: "e1", company_id: "co1", first_name: "Klaus", last_name: "Weber", role: "Geselle", hourly_rate: 45, email: "k.weber@firma.de", phone: "0152/11111", skills: ["Malerei", "Tapezieren"], color: "#3b82f6", is_active: true, created_at: ago(600) },
-    { id: "e2", company_id: "co1", first_name: "Markus", last_name: "Schulz", role: "Bauleiter", hourly_rate: 55, email: "m.schulz@firma.de", phone: "0152/22222", skills: ["Fassade", "Spachtel"], color: "#10b981", is_active: true, created_at: ago(500) },
-    { id: "e3", company_id: "co1", first_name: "Anna", last_name: "Fischer", role: "Gesellin", hourly_rate: 42, email: "a.fischer@firma.de", phone: "0152/33333", skills: ["Tapezieren", "Dekor"], color: "#8b5cf6", is_active: true, created_at: ago(300) },
-    { id: "e4", company_id: "co1", first_name: "Robert", last_name: "Braun", role: "Geselle", hourly_rate: 44, email: "r.braun@firma.de", phone: "0152/44444", skills: ["Malerei", "Grundierung"], color: "#f59e0b", is_active: true, created_at: ago(250) },
-    { id: "e5", company_id: "co1", first_name: "Brigitte", last_name: "Koch", role: "Burokraft", hourly_rate: 35, email: "b.koch@firma.de", phone: "0152/55555", skills: ["Buchhaltung"], color: "#ec4899", is_active: true, created_at: ago(400) },
+    { id: "e1", company_id: "co1", first_name: "Klaus", last_name: "Weber", role: "Geselle", hourly_rate: 45, email: "k.weber@firma.de", password: "password123", phone: "0152/11111", skills: ["Malerei", "Tapezieren"], color: "#3b82f6", is_active: true, created_at: ago(600) },
+    { id: "e2", company_id: "co1", first_name: "Markus", last_name: "Schulz", role: "Bauleiter", hourly_rate: 55, email: "m.schulz@firma.de", password: "password123", phone: "0152/22222", skills: ["Fassade", "Spachtel"], color: "#10b981", is_active: true, created_at: ago(500) },
+    { id: "e3", company_id: "co1", first_name: "Anna", last_name: "Fischer", role: "Gesellin", hourly_rate: 42, email: "a.fischer@firma.de", password: "password123", phone: "0152/33333", skills: ["Tapezieren", "Dekor"], color: "#8b5cf6", is_active: true, created_at: ago(300) },
+    { id: "e4", company_id: "co1", first_name: "Robert", last_name: "Braun", role: "Geselle", hourly_rate: 44, email: "r.braun@firma.de", password: "password123", phone: "0152/44444", skills: ["Malerei", "Grundierung"], color: "#f59e0b", is_active: true, created_at: ago(250) },
+    { id: "e5", company_id: "co1", first_name: "Brigitte", last_name: "Koch", role: "Bürokraft", hourly_rate: 35, email: "b.koch@firma.de", password: "password123", phone: "0152/55555", skills: ["Buchhaltung"], color: "#ec4899", is_active: true, created_at: ago(400) },
 ];
 
 export const mockProjects: Project[] = [

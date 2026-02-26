@@ -7,6 +7,7 @@ import StatusBadge from "@/components/ui/status-badge";
 import { formatCurrency, formatDate, today } from "@/lib/utils";
 import { Plus, Search, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 import { Project } from "@/types";
 
 const COLORS = ["#3b82f6", "#10b981", "#8b5cf6", "#f59e0b", "#ec4899", "#06b6d4", "#f97316"];
@@ -101,7 +102,7 @@ export default function ProjektePage() {
                     const invoiced = store.getProjectInvoiced(project.id);
                     const paid = store.getProjectPaid(project.id);
                     return (
-                        <div key={project.id} className="glass rounded-2xl overflow-hidden hover:border-slate-700/60 transition-all duration-300 group">
+                        <Link href={`/projekte/${project.id}`} key={project.id} className="glass rounded-2xl overflow-hidden hover:border-blue-500/50 transition-all duration-300 group cursor-pointer block relative">
                             <div className="h-1" style={{ backgroundColor: project.color }} />
                             <div className="p-5 space-y-3">
                                 <div className="flex items-start justify-between">
@@ -112,8 +113,8 @@ export default function ProjektePage() {
                                     <div className="flex items-center gap-2 flex-shrink-0">
                                         <StatusBadge status={project.status} />
                                         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button onClick={() => openEdit(project)} className="w-6 h-6 rounded border border-slate-700 hover:border-blue-500 flex items-center justify-center text-slate-500 hover:text-blue-400 transition-colors"><Pencil className="w-2.5 h-2.5" /></button>
-                                            <button onClick={() => handleDelete(project.id, project.name)} className="w-6 h-6 rounded border border-slate-700 hover:border-red-500 flex items-center justify-center text-slate-500 hover:text-red-400 transition-colors"><Trash2 className="w-2.5 h-2.5" /></button>
+                                            <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); openEdit(project); }} className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 hover:border-blue-500 flex items-center justify-center text-slate-500 hover:text-blue-400 transition-colors"><Pencil className="w-3 h-3" /></button>
+                                            <button onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDelete(project.id, project.name); }} className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 hover:border-red-500 flex items-center justify-center text-slate-500 hover:text-red-400 transition-colors"><Trash2 className="w-3 h-3" /></button>
                                         </div>
                                     </div>
                                 </div>
@@ -121,7 +122,6 @@ export default function ProjektePage() {
                                     <div className="flex justify-between text-xs"><span className="text-slate-400">Fortschritt</span><span className="text-white font-bold">{project.progress}%</span></div>
                                     <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden"><div className="h-full rounded-full transition-all duration-500" style={{ width: `${project.progress}%`, backgroundColor: project.color }} /></div>
                                 </div>
-                                {/* Budget vs Invoiced vs Paid */}
                                 <div className="grid grid-cols-3 gap-2 pt-3 border-t border-slate-800/60">
                                     <div className="text-center"><div className="text-[13px] font-bold text-white">{formatCurrency(project.budget)}</div><div className="text-[10px] text-slate-500">Budget</div></div>
                                     <div className="text-center"><div className="text-[13px] font-bold text-blue-400">{formatCurrency(invoiced)}</div><div className="text-[10px] text-slate-500">Fakturiert</div></div>
@@ -132,13 +132,13 @@ export default function ProjektePage() {
                                         {(project.team || []).map((eid) => {
                                             const emp = store.employees.find((e) => e.id === eid);
                                             if (!emp) return null;
-                                            return <div key={eid} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold text-white border-2 border-slate-900" style={{ backgroundColor: emp.color }}>{emp.first_name[0]}{emp.last_name[0]}</div>;
+                                            return <div key={eid} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold text-white border-2 border-slate-900 shadow-sm" style={{ backgroundColor: emp.color }}>{emp.first_name[0]}{emp.last_name[0]}</div>;
                                         })}
                                     </div>
                                     <span className="text-[11px] text-slate-500">{formatDate(project.start_date)} &ndash; {formatDate(project.end_date)}</span>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     );
                 })}
             </div>

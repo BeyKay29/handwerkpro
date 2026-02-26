@@ -8,11 +8,10 @@ export interface Customer {
     company_id: string;
     name: string;
     type: string;
+    contact_person?: string;
     email?: string;
     phone?: string;
     address?: string;
-    payment_terms: number;
-    credit_limit: number;
     notes?: string;
     created_at: string;
 }
@@ -116,6 +115,27 @@ export interface CatalogItem {
     unit: string;
     price: number;
     description?: string;
+    created_at: string;
+}
+
+export interface Notification {
+    id: string;
+    company_id: string;
+    title: string;
+    message: string;
+    type: "info" | "success" | "warning" | "error";
+    link?: string;
+    is_read: boolean;
+    created_at: string;
+}
+
+export interface TextTemplate {
+    id: string;
+    company_id: string;
+    name: string;
+    type: "angebot" | "rechnung" | "mahnung";
+    subject: string;
+    content: string;
     created_at: string;
 }
 

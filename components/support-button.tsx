@@ -7,7 +7,7 @@ export default function SupportButton() {
     const [open, setOpen] = useState(false);
 
     return (
-        <div className="fixed bottom-6 left-6 z-[90]">
+        <div className="fixed bottom-6 right-6 z-[90]">
             {open && (
                 <div className="mb-3 w-72 glass rounded-2xl overflow-hidden shadow-2xl shadow-black/30 animate-in slide-in-from-bottom">
                     <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800/60 bg-blue-500/5">

@@ -5,6 +5,8 @@ import TopBar from "@/components/top-bar";
 import { StoreProvider } from "@/lib/store";
 import { ToastProvider } from "@/components/ui/toast";
 
+import SupportButton from "@/components/support-button";
+
 export default function DashboardLayout({
     children,
 }: {
@@ -21,6 +23,7 @@ export default function DashboardLayout({
                             {children}
                         </main>
                     </div>
+                    <SupportButton />
                 </div>
             </ToastProvider>
         </StoreProvider>
