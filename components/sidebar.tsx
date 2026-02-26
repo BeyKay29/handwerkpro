@@ -18,6 +18,7 @@ import {
     ChevronLeft,
     Menu,
     X,
+    Bell,
 } from "lucide-react";
 import { useState, createContext, useContext } from "react";
 
@@ -28,6 +29,7 @@ const navigation = [
     { name: "Projekte", href: "/projekte", icon: Briefcase },
     { name: "Plantafel", href: "/plantafel", icon: CalendarRange },
     { name: "Zeiterfassung", href: "/zeiten", icon: Clock },
+    { name: "Benachrichtigungen", href: "/notifications", icon: Bell },
     { name: "Kunden", href: "/kunden", icon: Users },
     { name: "Mitarbeiter", href: "/mitarbeiter", icon: UsersRound },
     { name: "Leistungskatalog", href: "/leistungen", icon: Wrench },
