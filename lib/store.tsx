@@ -135,6 +135,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
                 try { setCurrentUser(JSON.parse(storedUser)); } catch { }
             }
 
+            // Pick up pending login from the login page (avoids useStore in login page at prerender)
+            const pendingLogin = localStorage.getItem("hwp_pendingLogin");
+            if (pendingLogin && !storedUser) {
+                localStorage.removeItem("hwp_pendingLogin");
+                const allEmps = loadOrDefault("employees", mockEmployees);
+                const emp = allEmps.find((e: Employee) => e.email === pendingLogin);
+                if (emp) setCurrentUser(emp);
+            }
+
             const storedTimer = localStorage.getItem("hwp_activeTimer");
             if (storedTimer) {
                 try { setActiveTimer(JSON.parse(storedTimer)); } catch { }

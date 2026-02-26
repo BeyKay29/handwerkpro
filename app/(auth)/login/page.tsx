@@ -3,12 +3,17 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff, ArrowRight, Lock } from "lucide-react";
-import { useStore } from "@/lib/store";
 
 export const dynamic = "force-dynamic";
 
+const DEMO_USERS: Record<string, string> = {
+    "m.schulz@firma.de": "password123",
+    "l.weber@firma.de": "password123",
+    "k.braun@firma.de": "password123",
+    "t.hoffmann@firma.de": "password123",
+};
+
 export default function LoginPage() {
-    const store = useStore();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -20,11 +25,12 @@ export default function LoginPage() {
         setLoading(true);
         setError(false);
 
-        // Use the store's login logic
-        if (store.login(email, password)) {
-            setTimeout(() => {
-                window.location.href = "/dashboard";
-            }, 500);
+        const validPassword = DEMO_USERS[email];
+        if (validPassword && validPassword === password) {
+            if (typeof window !== "undefined") {
+                localStorage.setItem("hwp_pendingLogin", email);
+            }
+            window.location.href = "/dashboard";
         } else {
             setLoading(false);
             setError(true);
