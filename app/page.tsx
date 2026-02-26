@@ -124,7 +124,7 @@ export default function LandingPage() {
               HP
             </div>
             <span className="font-display text-lg font-extrabold text-white tracking-tight">
-              Handwerk<span className="text-blue-500">Pro</span> <span className="text-[10px] bg-blue-500/20 text-blue-400 px-1.5 py-0.5 rounded ml-1">v2.0</span>
+              Handwerk<span className="text-blue-500">Pro</span>
             </span>
           </div>
           <nav className="hidden md:flex items-center gap-8">
@@ -156,22 +156,12 @@ export default function LandingPage() {
       <section className="pt-28 sm:pt-36 pb-16 sm:pb-24 px-5 sm:px-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(37,99,235,0.12),transparent_60%)]" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full text-xs font-semibold text-blue-400 mb-8">
-            <Zap className="w-3.5 h-3.5" />
-            Neu: Automatisiertes Mahnwesen mit 3 Stufen
-          </div>
-          <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-[1.1] mb-6 sm:mb-8">
-            Die Software, die Ihr
-            <br />
-            Handwerksbetrieb
-            <br />
-            <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-              verdient hat.
-            </span>
+          <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black text-white leading-[1.05] tracking-tight mb-8">
+            Ihr Betrieb. <br />
+            <span className="bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">Digital organisiert.</span>
           </h1>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed">
-            Angebote, Rechnungen, Projekte und Zeiterfassung &ndash; alles in einer Anwendung.
-            Kein Papierkram, keine Excel-Tabellen. Einfach professionell arbeiten.
+          <p className="text-lg sm:text-xl text-slate-400 leading-relaxed mb-12 max-w-2xl mx-auto">
+            Die Komplettlösung für Handwerksbetriebe. Angebote, Rechnungen, Projekte und Zeiterfassung in einer intuitiven Anwendung.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link

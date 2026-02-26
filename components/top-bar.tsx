@@ -1,12 +1,14 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Bell, Search, ExternalLink, X, Check, LogOut, LogIn, ChevronDown, User } from "lucide-react";
+import { Bell, Search, ExternalLink, X, Check, LogOut, LogIn, ChevronDown, User, RefreshCw } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { useState } from "react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { de } from "date-fns/locale";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const pageNames: Record<string, string> = {
     "/dashboard": "Dashboard",
@@ -24,51 +26,45 @@ const pageNames: Record<string, string> = {
 
 export default function TopBar() {
     const pathname = usePathname();
+    const router = useRouter();
     const store = useStore();
     const [notifOpen, setNotifOpen] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
-    const [loginModalOpen, setLoginModalOpen] = useState(false);
-
-    // Login form state
-    const [loginEmail, setLoginEmail] = useState("");
-    const [loginPass, setLoginPass] = useState("");
 
     const pageName = pageNames[pathname || ""] || "HandwerkPro";
     const unreadCount = store.notifications.filter(n => !n.is_read).length;
 
-    const handleLogin = () => {
-        if (store.login(loginEmail, loginPass)) {
-            setLoginModalOpen(false);
-            setLoginEmail("");
-            setLoginPass("");
-        } else {
-            alert("Ungültige Anmeldedaten");
+    // PROTECTION: If no user is logged in, redirect to login page
+    // excluding public landing page or login page itself to avoid loops
+    useEffect(() => {
+        if (!store.currentUser && pathname !== "/" && pathname !== "/login") {
+            router.push("/login");
         }
-    };
+    }, [store.currentUser, pathname, router]);
 
     return (
         <header className="sticky top-0 z-20 h-16 border-b border-slate-800/60 bg-slate-950/80 backdrop-blur-xl flex items-center justify-between px-6 lg:px-8 flex-shrink-0">
             {/* Left: Breadcrumb */}
-            <div className="flex items-center gap-3 pl-12 lg:pl-0">
-                <span className="text-xs text-slate-500 font-medium hidden sm:inline">HandwerkPro</span>
-                <span className="text-slate-700 hidden sm:inline">/</span>
-                <span className="text-sm font-bold text-white">{pageName}</span>
+            <div className="flex items-center gap-3 pl-12 lg:pl-0 min-w-0">
+                <span className="text-xs text-slate-500 font-medium hidden sm:inline flex-shrink-0">HandwerkPro</span>
+                <span className="text-slate-700 hidden sm:inline flex-shrink-0">/</span>
+                <span className="text-sm font-bold text-white truncate max-w-[120px] sm:max-w-none">{pageName}</span>
             </div>
 
             {/* Right: Actions */}
             <div className="flex items-center gap-3">
-                <button className="w-9 h-9 rounded-lg border border-slate-800 hover:border-slate-700 flex items-center justify-center text-slate-500 hover:text-slate-300 transition-colors">
-                    <Search className="w-4 h-4" />
+                <button className="w-10 h-10 rounded-xl border border-slate-800 hover:border-slate-700 bg-slate-900/50 flex items-center justify-center text-slate-500 hover:text-slate-300 transition-all active:scale-95 shadow-lg shadow-black/10">
+                    <Search className="w-5 h-5" />
                 </button>
 
                 <div className="relative">
                     <button
                         onClick={() => setNotifOpen(!notifOpen)}
-                        className={`relative w-9 h-9 rounded-lg border transition-all ${notifOpen ? 'bg-blue-500/10 border-blue-500/50 text-blue-400' : 'border-slate-800 hover:border-slate-700 text-slate-500 hover:text-slate-300'}`}
+                        className={`relative w-10 h-10 rounded-xl border transition-all active:scale-95 shadow-lg shadow-black/10 flex items-center justify-center ${notifOpen ? 'bg-blue-500/10 border-blue-500/50 text-blue-400' : 'border-slate-800 hover:border-slate-700 bg-slate-900/50 text-slate-500 hover:text-slate-300'}`}
                     >
-                        <Bell className="w-4 h-4" />
+                        <Bell className="w-5 h-5" />
                         {unreadCount > 0 && (
-                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-[9px] font-bold text-white ring-2 ring-slate-950">
+                            <div className="absolute top-1 right-1 min-w-[16px] h-4 px-1 bg-red-600 rounded-full flex items-center justify-center text-[8px] font-black text-white ring-2 ring-slate-950 animate-pulse">
                                 {unreadCount}
                             </div>
                         )}
@@ -167,10 +163,10 @@ export default function TopBar() {
                         </div>
                         <div className="hidden sm:block text-left">
                             <div className="text-xs font-bold text-white leading-none">
-                                {store.currentUser ? `${store.currentUser.first_name} ${store.currentUser.last_name}` : "Admin Login"}
+                                {store.currentUser ? `${store.currentUser.first_name} ${store.currentUser.last_name}` : "Anmeldung"}
                             </div>
                             <div className="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-black">
-                                {store.currentUser ? store.currentUser.role : "System"}
+                                {store.currentUser ? store.currentUser.role : "Benutzer"}
                             </div>
                         </div>
                         <ChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
@@ -182,24 +178,20 @@ export default function TopBar() {
                             <div className="absolute right-0 mt-3 w-56 glass rounded-2xl shadow-3xl border border-white/10 overflow-hidden z-50 animate-in fade-in zoom-in-95 origin-top-right">
                                 <div className="p-2 space-y-1">
                                     {store.currentUser ? (
-                                        <>
-                                            <div className="px-3 py-2 text-[10px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-800 mb-1 flex items-center gap-2">
-                                                <User className="w-3 h-3" /> Sitzung
-                                            </div>
-                                            <button
-                                                onClick={() => { store.logout(); setUserMenuOpen(false); }}
-                                                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-400 hover:bg-red-400/10 transition-colors text-xs font-bold"
-                                            >
-                                                <LogOut className="w-4 h-4" /> Abmelden
-                                            </button>
-                                        </>
-                                    ) : (
                                         <button
-                                            onClick={() => { setLoginModalOpen(true); setUserMenuOpen(false); }}
+                                            onClick={() => { store.logout(); setUserMenuOpen(false); router.push("/login"); }}
+                                            className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-red-400 hover:bg-red-400/10 transition-colors text-xs font-bold"
+                                        >
+                                            <LogOut className="w-4 h-4" /> Abmelden
+                                        </button>
+                                    ) : (
+                                        <Link
+                                            href="/login"
+                                            onClick={() => setUserMenuOpen(false)}
                                             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-blue-400 hover:bg-blue-400/10 transition-colors text-xs font-bold"
                                         >
-                                            <LogIn className="w-4 h-4" /> Als Mitarbeiter einloggen
-                                        </button>
+                                            <LogIn className="w-4 h-4" /> Anmelden
+                                        </Link>
                                     )}
                                 </div>
                             </div>
@@ -208,62 +200,6 @@ export default function TopBar() {
                 </div>
             </div>
 
-            {/* Simulated Login Modal */}
-            {loginModalOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-950/60 backdrop-blur-sm">
-                    <div className="w-full max-w-sm glass rounded-3xl border border-white/10 shadow-3xl overflow-hidden animate-in fade-in zoom-in-95">
-                        <div className="p-8 space-y-6">
-                            <div className="text-center space-y-2">
-                                <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center font-black text-white text-lg mx-auto mb-4 shadow-xl shadow-blue-500/30">HP</div>
-                                <h3 className="text-xl font-bold text-white">Mitarbeiter Login</h3>
-                                <p className="text-xs text-slate-500">Geben Sie Ihre Zugangsdaten ein, um Ihre Zeiten zu erfassen.</p>
-                            </div>
-
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">E-Mail Adresse</label>
-                                    <input
-                                        type="email"
-                                        value={loginEmail}
-                                        onChange={(e) => setLoginEmail(e.target.value)}
-                                        placeholder="name@firma.de"
-                                        className="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white focus:ring-2 focus:ring-blue-500/50 outline-none transition-all placeholder:text-slate-700"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Passwort</label>
-                                    <input
-                                        type="password"
-                                        value={loginPass}
-                                        onChange={(e) => setLoginPass(e.target.value)}
-                                        placeholder="••••••••"
-                                        className="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-sm text-white focus:ring-2 focus:ring-blue-500/50 outline-none transition-all placeholder:text-slate-700"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="pt-2 flex flex-col gap-3">
-                                <button
-                                    onClick={handleLogin}
-                                    className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-2xl transition-all shadow-xl shadow-blue-500/20 active:scale-95"
-                                >
-                                    Anmelden
-                                </button>
-                                <button
-                                    onClick={() => setLoginModalOpen(false)}
-                                    className="w-full py-2 text-xs font-bold text-slate-500 hover:text-white transition-colors"
-                                >
-                                    Abbrechen
-                                </button>
-                            </div>
-
-                            <div className="p-3 bg-white/5 rounded-xl text-[10px] text-slate-500 italic text-center">
-                                Tipp: In der Demo können Sie z.B. <code className="text-blue-400 font-bold not-italic">m.schulz@firma.de</code> nutzen.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
         </header>
     );
 }

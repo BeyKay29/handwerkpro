@@ -4,9 +4,10 @@ import { useStore } from "@/lib/store";
 import { useToast } from "@/components/ui/toast";
 import Modal from "@/components/ui/modal";
 import { formatCurrency } from "@/lib/utils";
-import { Plus, Search, Pencil, Trash2, User } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, User, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { Customer } from "@/types";
+import Link from "next/link";
 
 const emptyForm = { name: "", type: "Gewerblich", contact_person: "", email: "", phone: "", address: "", notes: "" };
 
@@ -88,8 +89,9 @@ export default function KundenPage() {
                     const typeColor = c.type === "Stammkunde" ? "bg-emerald-500/15 text-emerald-400" : c.type === "Gewerblich" ? "bg-blue-500/15 text-blue-400" : "bg-slate-500/15 text-slate-400";
 
                     return (
-                        <div key={c.id} className="glass rounded-2xl p-5 hover:border-slate-700/60 transition-all duration-300 group space-y-3">
-                            <div className="flex items-start justify-between">
+                        <div key={c.id} className="glass rounded-2xl p-5 hover:border-blue-500/50 transition-all duration-300 group space-y-3 relative">
+                            <Link href={`/kunden/${c.id}`} className="absolute inset-0 z-0" />
+                            <div className="flex items-start justify-between relative z-10 pointer-events-none">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 flex items-center justify-center text-sm font-bold text-blue-400 flex-shrink-0">{initials}</div>
                                     <div className="min-w-0">
@@ -97,25 +99,34 @@ export default function KundenPage() {
                                         <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold ${typeColor}`}>{c.type}</span>
                                     </div>
                                 </div>
-                                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-                                    <button onClick={() => openEdit(c)} className="w-7 h-7 rounded-md border border-slate-700 hover:border-blue-500 flex items-center justify-center text-slate-500 hover:text-blue-400 transition-colors">
+                                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 pointer-events-auto">
+                                    <button
+                                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); openEdit(c); }}
+                                        className="w-7 h-7 rounded-md border border-slate-700 hover:border-blue-500 flex items-center justify-center text-slate-500 hover:text-blue-400 transition-colors"
+                                    >
                                         <Pencil className="w-3 h-3" />
                                     </button>
-                                    <button onClick={() => handleDelete(c.id, c.name)} className="w-7 h-7 rounded-md border border-slate-700 hover:border-red-500 flex items-center justify-center text-slate-500 hover:text-red-400 transition-colors">
+                                    <button
+                                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDelete(c.id, c.name); }}
+                                        className="w-7 h-7 rounded-md border border-slate-700 hover:border-red-500 flex items-center justify-center text-slate-500 hover:text-red-400 transition-colors"
+                                    >
                                         <Trash2 className="w-3 h-3" />
                                     </button>
                                 </div>
                             </div>
-                            <div className="space-y-1 text-xs text-slate-400">
+                            <div className="space-y-1 text-xs text-slate-400 relative z-10 pointer-events-none">
                                 {c.contact_person && <div className="flex items-center gap-1.5"><User className="w-3 h-3 opacity-40" /> {c.contact_person}</div>}
                                 {c.email && <div className="truncate">{c.email}</div>}
                                 {c.phone && <div>{c.phone}</div>}
                             </div>
-                            <div className="grid grid-cols-4 gap-2 pt-3 border-t border-slate-800/60">
+                            <div className="grid grid-cols-4 gap-2 pt-3 border-t border-slate-800/60 relative z-10 pointer-events-none">
                                 <div className="text-center"><div className="text-[13px] font-bold text-emerald-400">{formatCurrency(revenue)}</div><div className="text-[10px] text-slate-500">Umsatz</div></div>
                                 <div className="text-center"><div className="text-[13px] font-bold text-amber-400">{openAmount > 0 ? formatCurrency(openAmount) : "\u2014"}</div><div className="text-[10px] text-slate-500">Offen</div></div>
                                 <div className="text-center"><div className="text-[13px] font-bold text-white">{docCount}</div><div className="text-[10px] text-slate-500">Dokum.</div></div>
                                 <div className="text-center"><div className="text-[13px] font-bold text-white">{projCount}</div><div className="text-[10px] text-slate-500">Projekte</div></div>
+                            </div>
+                            <div className="absolute bottom-4 right-4 text-blue-500 opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all z-10 pointer-events-none">
+                                <ArrowRight className="w-4 h-4" />
                             </div>
                         </div>
                     );

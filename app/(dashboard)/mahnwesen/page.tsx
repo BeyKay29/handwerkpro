@@ -4,7 +4,9 @@ import { useStore } from "@/lib/store";
 import { useToast } from "@/components/ui/toast";
 import { formatCurrency, formatDate, daysDiff } from "@/lib/utils";
 import StatCard from "@/components/ui/stat-card";
-import { AlertTriangle, DollarSign, Mail } from "lucide-react";
+import { AlertTriangle, DollarSign, Mail, Eye } from "lucide-react";
+import DocumentPreview from "@/components/document-preview";
+import { useState } from "react";
 
 export default function MahnwesenPage() {
     const store = useStore();
@@ -12,6 +14,8 @@ export default function MahnwesenPage() {
     const overdue = store.invoices.filter((d) => d.doc_type === "rechnung" && d.status !== "bezahlt" && d.status !== "entwurf" && d.due_date && daysDiff(d.due_date) > 0);
     const totalOverdue = overdue.reduce((s, d) => s + (d.total_amount - d.paid_amount), 0);
     const totalMahnungen = store.invoices.reduce((s, d) => s + d.dunning_level, 0);
+
+    const [previewId, setPreviewId] = useState<string | null>(null);
 
     function mahnen(id: string) {
         const doc = store.invoices.find((d) => d.id === id);
@@ -66,13 +70,24 @@ export default function MahnwesenPage() {
                     </thead>
                     <tbody className="divide-y divide-slate-800/40">
                         {overdue.map((doc) => (
-                            <tr key={doc.id} className="hover:bg-slate-800/30 transition-colors">
-                                <td className="px-5 py-4 text-sm font-bold text-white">{doc.doc_number}</td>
+                            <tr
+                                key={doc.id}
+                                className="group hover:bg-slate-800/30 transition-colors cursor-pointer"
+                                onClick={() => setPreviewId(doc.id)}
+                            >
+                                <td className="px-5 py-4 text-sm font-bold text-white">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-6 h-6 rounded bg-slate-800 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <Eye className="w-3 h-3 text-blue-400" />
+                                        </div>
+                                        {doc.doc_number}
+                                    </div>
+                                </td>
                                 <td className="px-5 py-4 text-sm text-slate-300">{store.getCustomerName(doc.customer_id)}</td>
                                 <td className="px-5 py-4 text-sm font-bold text-red-400">{formatCurrency(doc.total_amount - doc.paid_amount)}</td>
                                 <td className="px-5 py-4 text-sm text-red-400">{daysDiff(doc.due_date!)} Tage</td>
                                 <td className="px-5 py-4"><span className={`inline-flex px-2.5 py-1 rounded-full text-[11px] font-bold ${stufeColor(doc.dunning_level)}`}>{stufeLabel(doc.dunning_level)}</span></td>
-                                <td className="px-5 py-4">
+                                <td className="px-5 py-4" onClick={(e) => e.stopPropagation()}>
                                     <button onClick={() => mahnen(doc.id)} disabled={doc.dunning_level >= 3}
                                         className="px-3 py-1.5 text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-lg hover:bg-amber-500/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
                                         {doc.dunning_level >= 3 ? "Max. erreicht" : "Mahnen"}
@@ -84,6 +99,12 @@ export default function MahnwesenPage() {
                 </table>
                 {overdue.length === 0 && <div className="px-6 py-8 text-center text-sm text-slate-500">Keine ueberfaelligen Forderungen.</div>}
             </div>
+
+            <DocumentPreview
+                documentId={previewId}
+                open={!!previewId}
+                onClose={() => setPreviewId(null)}
+            />
         </div>
     );
 }

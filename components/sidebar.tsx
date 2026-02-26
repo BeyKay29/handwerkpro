@@ -138,48 +138,57 @@ export default function Sidebar() {
                         collapsed ? "px-2 pt-4" : "px-3"
                     )}
                 >
-                    {navigation.map((item) => {
-                        const isActive =
-                            pathname === item.href ||
-                            pathname?.startsWith(item.href + "/");
-                        return (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                onClick={() => setMobileOpen(false)}
-                                title={collapsed ? item.name : undefined}
-                                className={cn(
-                                    "flex items-center gap-3 rounded-lg transition-all duration-150 group relative",
-                                    collapsed ? "px-2.5 py-2.5 justify-center" : "px-3 py-2.5",
-                                    isActive
-                                        ? "bg-blue-500/10 text-blue-400"
-                                        : "text-slate-400 hover:bg-slate-800/50 hover:text-slate-200"
-                                )}
-                            >
-                                {isActive && (
-                                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 bg-blue-500 rounded-r-full" />
-                                )}
-                                <item.icon
+                    {navigation
+                        .filter(item => {
+                            if (!store.currentUser) return true; // Show all if not logged in (legacy/demo)
+                            if (store.currentUser.role?.toLowerCase() === "admin") return true;
+
+                            // Employee restrictions
+                            const allowedForEmployee = ["Dashboard", "Plantafel", "Zeiterfassung", "Benachrichtigungen"];
+                            return allowedForEmployee.includes(item.name);
+                        })
+                        .map((item) => {
+                            const isActive =
+                                pathname === item.href ||
+                                pathname?.startsWith(item.href + "/");
+                            return (
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    onClick={() => setMobileOpen(false)}
+                                    title={collapsed ? item.name : undefined}
                                     className={cn(
-                                        "w-[18px] h-[18px] flex-shrink-0",
+                                        "flex items-center gap-3 rounded-lg transition-all duration-150 group relative",
+                                        collapsed ? "px-2.5 py-2.5 justify-center" : "px-3 py-2.5",
                                         isActive
-                                            ? "text-blue-400"
-                                            : "text-slate-500 group-hover:text-slate-300"
+                                            ? "bg-blue-500/10 text-blue-400"
+                                            : "text-slate-400 hover:bg-slate-800/50 hover:text-slate-200"
                                     )}
-                                />
-                                {!collapsed && (
-                                    <span
+                                >
+                                    {isActive && (
+                                        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-4 bg-blue-500 rounded-r-full" />
+                                    )}
+                                    <item.icon
                                         className={cn(
-                                            "text-[13px] font-semibold truncate",
-                                            isActive ? "text-blue-400" : ""
+                                            "w-[18px] h-[18px] flex-shrink-0",
+                                            isActive
+                                                ? "text-blue-400"
+                                                : "text-slate-500 group-hover:text-slate-300"
                                         )}
-                                    >
-                                        {item.name}
-                                    </span>
-                                )}
-                            </Link>
-                        );
-                    })}
+                                    />
+                                    {!collapsed && (
+                                        <span
+                                            className={cn(
+                                                "text-[13px] font-semibold truncate",
+                                                isActive ? "text-blue-400" : ""
+                                            )}
+                                        >
+                                            {item.name}
+                                        </span>
+                                    )}
+                                </Link>
+                            );
+                        })}
                 </nav>
 
                 {/* Footer */}

@@ -5,9 +5,11 @@ import { useToast } from "@/components/ui/toast";
 import Modal from "@/components/ui/modal";
 import StatusBadge from "@/components/ui/status-badge";
 import { formatCurrency, formatDate, daysDiff, today, uid } from "@/lib/utils";
-import { Plus, Search, Pencil, Trash2, ArrowUpDown, DollarSign, FileCheck } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, ArrowUpDown, DollarSign, FileCheck, Eye } from "lucide-react";
 import { useState } from "react";
 import { Invoice, DocumentItem } from "@/types";
+import Link from "next/link";
+import DocumentPreview from "@/components/document-preview";
 
 const typeLabels: Record<string, string> = { angebot: "Angebot", rechnung: "Rechnung" };
 
@@ -25,6 +27,7 @@ export default function AngebotePage() {
     const [editId, setEditId] = useState<string | null>(null);
     const [payDocId, setPayDocId] = useState<string | null>(null);
     const [payAmount, setPayAmount] = useState(0);
+    const [previewId, setPreviewId] = useState<string | null>(null);
 
     // Form state
     const [docType, setDocType] = useState<"angebot" | "rechnung">("angebot");
@@ -194,15 +197,30 @@ export default function AngebotePage() {
                         {filtered.map((doc) => {
                             const isOverdue = doc.due_date && daysDiff(doc.due_date) > 0 && doc.status !== "bezahlt";
                             return (
-                                <tr key={doc.id} className="hover:bg-slate-800/30 transition-colors">
-                                    <td className="px-5 py-4 text-sm font-bold text-white">{doc.doc_number}</td>
+                                <tr
+                                    key={doc.id}
+                                    className="group hover:bg-slate-800/30 transition-colors cursor-pointer"
+                                    onClick={() => setPreviewId(doc.id)}
+                                >
+                                    <td className="px-5 py-4 text-sm font-bold text-white">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-6 h-6 rounded bg-slate-800 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <Eye className="w-3 h-3 text-blue-400" />
+                                            </div>
+                                            {doc.doc_number}
+                                        </div>
+                                    </td>
                                     <td className="px-5 py-4"><span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">{typeLabels[doc.doc_type] || doc.doc_type}</span></td>
-                                    <td className="px-5 py-4 text-sm text-slate-300">{store.getCustomerName(doc.customer_id)}</td>
+                                    <td className="px-5 py-4 text-sm text-slate-300" onClick={(e) => e.stopPropagation()}>
+                                        <Link href={`/kunden/${doc.customer_id}`} className="hover:text-blue-400 transition-colors">
+                                            {store.getCustomerName(doc.customer_id)}
+                                        </Link>
+                                    </td>
                                     <td className="px-5 py-4 text-sm text-slate-400">{formatDate(doc.date)}</td>
                                     <td className={`px-5 py-4 text-sm ${isOverdue ? "text-red-400 font-semibold" : "text-slate-400"}`}>{formatDate(doc.due_date)}</td>
                                     <td className="px-5 py-4 text-sm font-bold text-white">{formatCurrency(doc.total_amount)}</td>
                                     <td className="px-5 py-4"><StatusBadge status={doc.status} /></td>
-                                    <td className="px-5 py-4">
+                                    <td className="px-5 py-4" onClick={(e) => e.stopPropagation()}>
                                         <div className="flex gap-1">
                                             <button onClick={() => openEdit(doc)} className="w-7 h-7 rounded-md border border-slate-700 hover:border-blue-500 flex items-center justify-center text-slate-500 hover:text-blue-400 transition-colors" title="Bearbeiten"><Pencil className="w-3 h-3" /></button>
                                             {doc.doc_type === "rechnung" && doc.status !== "bezahlt" && (
@@ -369,6 +387,12 @@ export default function AngebotePage() {
                     </div>
                 </div>
             </Modal>
+
+            <DocumentPreview
+                documentId={previewId}
+                open={!!previewId}
+                onClose={() => setPreviewId(null)}
+            />
         </div>
     );
 }

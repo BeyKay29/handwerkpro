@@ -148,7 +148,7 @@ export default function ProjectDetailPage() {
                                 <div className="space-y-2">
                                     <div className="flex items-center gap-2 text-xs text-slate-400"><MapPin className="w-3 h-3" /> {customer.address}</div>
                                 </div>
-                                <Link href={`/kunden`} className="flex items-center justify-between text-xs font-bold text-blue-400 hover:text-blue-300 pt-2 border-t border-blue-500/10 transition-colors">
+                                <Link href={`/kunden/${customer.id}`} className="flex items-center justify-between text-xs font-bold text-blue-400 hover:text-blue-300 pt-2 border-t border-blue-500/10 transition-colors">
                                     Kundenprofil aufrufen <ChevronRight className="w-3 h-3" />
                                 </Link>
                             </div>

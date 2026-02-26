@@ -3,21 +3,30 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff, ArrowRight, Lock } from "lucide-react";
+import { useStore } from "@/lib/store";
 
 export default function LoginPage() {
+    const store = useStore();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        // TODO: Supabase auth integration
-        // For now, redirect to dashboard
-        setTimeout(() => {
-            window.location.href = "/dashboard";
-        }, 800);
+        setError(false);
+
+        // Use the store's login logic
+        if (store.login(email, password)) {
+            setTimeout(() => {
+                window.location.href = "/dashboard";
+            }, 500);
+        } else {
+            setLoading(false);
+            setError(true);
+        }
     };
 
     return (
@@ -89,6 +98,11 @@ export default function LoginPage() {
                     </div>
 
                     <form onSubmit={handleLogin} className="space-y-5">
+                        {error && (
+                            <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-bold animate-in fade-in slide-in-from-top-1">
+                                Ungultige E-Mail oder Passwort. Bitte versuchen Sie es erneut.
+                            </div>
+                        )}
                         <div>
                             <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
                                 E-Mail-Adresse
@@ -161,7 +175,13 @@ export default function LoginPage() {
                         </p>
                     </div>
 
-                    <div className="mt-10 flex items-center gap-2 justify-center text-[11px] text-slate-600">
+                    <div className="mt-10 p-4 rounded-xl bg-blue-500/5 border border-blue-500/10 text-[10px] text-slate-500 space-y-2">
+                        <div className="font-bold text-blue-400 uppercase tracking-widest">Demo-Zugänge:</div>
+                        <div>Admin: <code className="text-blue-300">m.schulz@firma.de</code> / <code className="text-blue-300">password123</code></div>
+                        <div>Mitarbeiter: <code className="text-blue-300">l.weber@firma.de</code> / <code className="text-blue-300">password123</code></div>
+                    </div>
+
+                    <div className="mt-8 flex items-center gap-2 justify-center text-[11px] text-slate-600">
                         <Lock className="w-3 h-3" />
                         <span>Verschlusselte Ubertragung | DSGVO-konform</span>
                     </div>

@@ -8,11 +8,19 @@ export function createClient() {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-    if (!url || !key || url.includes("your-project")) {
-        console.warn("Supabase credentials missing. App will run in mock mode.");
+    // Security: Check for missing or placeholder credentials
+    if (!url || !key || url.includes("your-project") || url === "") {
+        if (process.env.NODE_ENV === "development") {
+            console.info("Supabase credentials missing. App will run in secure mock mode.");
+        }
         return null;
     }
 
-    supabaseClient = createBrowserClient(url, key);
-    return supabaseClient;
+    try {
+        supabaseClient = createBrowserClient(url, key);
+        return supabaseClient;
+    } catch (e) {
+        console.error("Failed to initialize Supabase:", e);
+        return null;
+    }
 }

@@ -108,7 +108,13 @@ export default function ProjektePage() {
                                 <div className="flex items-start justify-between">
                                     <div className="min-w-0">
                                         <h3 className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors truncate">{project.name}</h3>
-                                        <p className="text-xs text-slate-500 mt-0.5">{store.getCustomerName(project.customer_id || "")}</p>
+                                        <Link
+                                            href={`/kunden/${project.customer_id}`}
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="text-xs text-slate-500 mt-0.5 hover:text-blue-400 transition-colors inline-block"
+                                        >
+                                            {store.getCustomerName(project.customer_id || "")}
+                                        </Link>
                                     </div>
                                     <div className="flex items-center gap-2 flex-shrink-0">
                                         <StatusBadge status={project.status} />

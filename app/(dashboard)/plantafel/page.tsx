@@ -104,71 +104,75 @@ export default function PlantafelPage() {
                 </div>
             </header>
 
-            <div className="glass rounded-3xl overflow-hidden border border-slate-800/60 shadow-2xl">
-                <div className="overflow-x-auto">
-                    <table className="w-full min-w-[800px] border-collapse">
-                        <thead>
-                            <tr className="bg-slate-900/40 border-b border-slate-800/80">
-                                <th className="sticky left-0 z-10 bg-slate-950 px-6 py-5 text-left text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] w-56 border-r border-slate-800/60">Mitarbeiter</th>
-                                {days.map((d) => (
-                                    <th key={d.date} className={`px-4 py-5 text-center transition-colors ${d.date === todayStr ? "bg-blue-500/5" : ""}`}>
-                                        <div className={`text-[10px] font-black uppercase tracking-widest ${d.date === todayStr ? "text-blue-400" : "text-slate-500"}`}>{d.label}</div>
-                                        <div className="text-[9px] text-slate-600 mt-0.5">{d.dayName}</div>
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-800/40">
-                            {store.employees.map((emp) => (
-                                <tr key={emp.id} className="group hover:bg-white/[0.02] transition-colors">
-                                    <td className="sticky left-0 z-10 bg-slate-950 px-6 py-4 border-r border-slate-800/60 shadow-[4px_0_12px_rgba(0,0,0,0.5)]">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-bold text-white shadow-lg" style={{ backgroundColor: emp.color }}>
-                                                {emp.first_name[0]}{emp.last_name[0]}
-                                            </div>
-                                            <div className="min-w-0">
-                                                <div className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors truncate">{emp.first_name} {emp.last_name}</div>
-                                                <div className="text-[10px] text-slate-500 truncate">{emp.role}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    {days.map((d) => {
-                                        const entries = store.timeEntries.filter((t) => t.employee_id === emp.id && t.date === d.date);
-                                        const isToday = d.date === todayStr;
+            {/* Planning Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                {days.map((day) => {
+                    const isToday = day.date === todayStr;
+                    return (
+                        <div key={day.date} className={`flex flex-col gap-4 ${isToday ? "opacity-100" : "opacity-90"}`}>
+                            {/* Day Header */}
+                            <div className={`p-4 rounded-2xl border ${isToday ? "bg-blue-600 border-blue-500 shadow-lg shadow-blue-500/20" : "bg-slate-900/50 border-slate-800"}`}>
+                                <div className={`text-[10px] font-black uppercase tracking-[0.2em] ${isToday ? "text-blue-100" : "text-slate-500"}`}>
+                                    {day.dayName}
+                                </div>
+                                <div className={`text-lg font-black mt-1 ${isToday ? "text-white" : "text-slate-200"}`}>
+                                    {day.label.split(" ")[1]}
+                                </div>
+                            </div>
 
+                            {/* Employees for this day */}
+                            <div className="space-y-3">
+                                {store.employees
+                                    .filter(e => store.currentUser?.role?.toLowerCase() === "admin" || e.id === store.currentUser?.id)
+                                    .map((emp) => {
+                                        const entries = store.timeEntries.filter((t) => t.employee_id === emp.id && t.date === day.date);
                                         return (
-                                            <td key={d.date} onClick={() => openManage(emp.id, d.date)} className={`px-3 py-4 cursor-pointer align-top transition-all ${isToday ? "bg-blue-500/5" : ""}`}>
-                                                <div className="space-y-1.5 min-h-[40px]">
-                                                    {entries.map((entry) => {
-                                                        const proj = store.projects.find((p) => p.id === entry.project_id);
-                                                        const color = proj?.color || "#475569";
-                                                        return (
-                                                            <div key={entry.id} className="relative px-2 py-1.5 rounded-lg border border-slate-700/50 bg-slate-900/40 hover:bg-slate-800/60 transition-colors">
-                                                                <div className="flex items-center gap-1.5 mb-1">
-                                                                    <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ backgroundColor: color }} />
-                                                                    <div className="text-[9px] font-black text-white truncate max-w-[80px]">
-                                                                        {proj ? proj.name : entry.type.toUpperCase()}
+                                            <div
+                                                key={emp.id}
+                                                onClick={() => openManage(emp.id, day.date)}
+                                                className="glass rounded-2xl p-4 border border-slate-800/60 hover:border-blue-500/50 transition-all cursor-pointer group relative overflow-hidden"
+                                            >
+                                                <div className="flex items-center gap-3 mb-3">
+                                                    <div className="w-7 h-7 rounded-lg flex items-center justify-center text-[10px] font-bold text-white shadow-lg" style={{ backgroundColor: emp.color }}>
+                                                        {emp.first_name[0]}{emp.last_name[0]}
+                                                    </div>
+                                                    <div className="text-xs font-bold text-white truncate">{emp.first_name}</div>
+                                                    <Plus className="w-3.5 h-3.5 text-slate-600 group-hover:text-blue-400 ml-auto transition-colors" />
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    {entries.length === 0 ? (
+                                                        <div className="text-[10px] text-slate-600 italic py-1">Nicht eingeteilt</div>
+                                                    ) : (
+                                                        entries.map((entry) => {
+                                                            const proj = store.projects.find((p) => p.id === entry.project_id);
+                                                            const color = proj?.color || "#475569";
+                                                            return (
+                                                                <div
+                                                                    key={entry.id}
+                                                                    className="px-2.5 py-2 rounded-xl bg-slate-900/80 border border-slate-800 flex flex-col gap-1"
+                                                                >
+                                                                    <div className="flex items-center gap-2">
+                                                                        <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color }} />
+                                                                        <div className="text-[10px] font-bold text-white truncate">
+                                                                            {proj ? proj.name : entry.type.toUpperCase()}
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="text-[9px] text-slate-500 font-medium">
+                                                                        {entry.duration}h &bull; {entry.description || "Projektarbeit"}
                                                                     </div>
                                                                 </div>
-                                                                <div className="flex justify-between items-center">
-                                                                    <span className="text-[8px] text-slate-500 font-bold">{entry.duration}h</span>
-                                                                    <span className="text-[8px] text-slate-600 truncate max-w-[60px]">{entry.description}</span>
-                                                                </div>
-                                                            </div>
-                                                        );
-                                                    })}
-                                                    <div className="w-full h-8 border border-dashed border-slate-800 rounded-xl flex items-center justify-center text-slate-700 group-hover:border-slate-700 group-hover:text-slate-500 transition-all opacity-0 group-hover:opacity-100 italic text-[10px]">
-                                                        + Hinzufügen
-                                                    </div>
+                                                            );
+                                                        })
+                                                    )}
                                                 </div>
-                                            </td>
+                                            </div>
                                         );
                                     })}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
 
             {/* Manage Day Modal */}
