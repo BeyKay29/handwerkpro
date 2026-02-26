@@ -73,8 +73,8 @@ export default function ProjektePage() {
     }
 
     return (
-        <div className="p-8 max-w-[1400px] mx-auto space-y-6">
-            <header className="flex items-end justify-between">
+        <div className="p-5 lg:p-8 max-w-[1400px] mx-auto space-y-6">
+            <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                     <h1 className="font-display text-3xl font-extrabold text-white tracking-tight">Projekte</h1>
                     <p className="text-slate-400 text-sm mt-1">{filtered.length} Projekte</p>
@@ -96,41 +96,51 @@ export default function ProjektePage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {filtered.map((project) => (
-                    <div key={project.id} className="glass rounded-2xl overflow-hidden hover:border-slate-700/60 transition-all duration-300 group">
-                        <div className="h-1" style={{ backgroundColor: project.color }} />
-                        <div className="p-6 space-y-4">
-                            <div className="flex items-start justify-between">
-                                <div>
-                                    <h3 className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">{project.name}</h3>
-                                    <p className="text-xs text-slate-500 mt-0.5">{store.getCustomerName(project.customer_id || "")}</p>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <StatusBadge status={project.status} />
-                                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button onClick={() => openEdit(project)} className="w-6 h-6 rounded border border-slate-700 hover:border-blue-500 flex items-center justify-center text-slate-500 hover:text-blue-400 transition-colors"><Pencil className="w-2.5 h-2.5" /></button>
-                                        <button onClick={() => handleDelete(project.id, project.name)} className="w-6 h-6 rounded border border-slate-700 hover:border-red-500 flex items-center justify-center text-slate-500 hover:text-red-400 transition-colors"><Trash2 className="w-2.5 h-2.5" /></button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filtered.map((project) => {
+                    const invoiced = store.getProjectInvoiced(project.id);
+                    const paid = store.getProjectPaid(project.id);
+                    return (
+                        <div key={project.id} className="glass rounded-2xl overflow-hidden hover:border-slate-700/60 transition-all duration-300 group">
+                            <div className="h-1" style={{ backgroundColor: project.color }} />
+                            <div className="p-5 space-y-3">
+                                <div className="flex items-start justify-between">
+                                    <div className="min-w-0">
+                                        <h3 className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors truncate">{project.name}</h3>
+                                        <p className="text-xs text-slate-500 mt-0.5">{store.getCustomerName(project.customer_id || "")}</p>
+                                    </div>
+                                    <div className="flex items-center gap-2 flex-shrink-0">
+                                        <StatusBadge status={project.status} />
+                                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button onClick={() => openEdit(project)} className="w-6 h-6 rounded border border-slate-700 hover:border-blue-500 flex items-center justify-center text-slate-500 hover:text-blue-400 transition-colors"><Pencil className="w-2.5 h-2.5" /></button>
+                                            <button onClick={() => handleDelete(project.id, project.name)} className="w-6 h-6 rounded border border-slate-700 hover:border-red-500 flex items-center justify-center text-slate-500 hover:text-red-400 transition-colors"><Trash2 className="w-2.5 h-2.5" /></button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="space-y-2">
-                                <div className="flex justify-between text-xs"><span className="text-slate-400">Budget: {formatCurrency(project.budget)}</span><span className="text-white font-bold">{project.progress}%</span></div>
-                                <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden"><div className="h-full rounded-full transition-all duration-500" style={{ width: `${project.progress}%`, backgroundColor: project.color }} /></div>
-                            </div>
-                            <div className="flex items-center justify-between pt-2 border-t border-slate-800/60">
-                                <div className="flex -space-x-2">
-                                    {(project.team || []).map((eid) => {
-                                        const emp = store.employees.find((e) => e.id === eid);
-                                        if (!emp) return null;
-                                        return <div key={eid} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold text-white border-2 border-slate-900" style={{ backgroundColor: emp.color }}>{emp.first_name[0]}{emp.last_name[0]}</div>;
-                                    })}
+                                <div className="space-y-2">
+                                    <div className="flex justify-between text-xs"><span className="text-slate-400">Fortschritt</span><span className="text-white font-bold">{project.progress}%</span></div>
+                                    <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden"><div className="h-full rounded-full transition-all duration-500" style={{ width: `${project.progress}%`, backgroundColor: project.color }} /></div>
                                 </div>
-                                <span className="text-[11px] text-slate-500">{formatDate(project.start_date)} &ndash; {formatDate(project.end_date)}</span>
+                                {/* Budget vs Invoiced vs Paid */}
+                                <div className="grid grid-cols-3 gap-2 pt-3 border-t border-slate-800/60">
+                                    <div className="text-center"><div className="text-[13px] font-bold text-white">{formatCurrency(project.budget)}</div><div className="text-[10px] text-slate-500">Budget</div></div>
+                                    <div className="text-center"><div className="text-[13px] font-bold text-blue-400">{formatCurrency(invoiced)}</div><div className="text-[10px] text-slate-500">Fakturiert</div></div>
+                                    <div className="text-center"><div className="text-[13px] font-bold text-emerald-400">{formatCurrency(paid)}</div><div className="text-[10px] text-slate-500">Bezahlt</div></div>
+                                </div>
+                                <div className="flex items-center justify-between pt-2 border-t border-slate-800/60">
+                                    <div className="flex -space-x-2">
+                                        {(project.team || []).map((eid) => {
+                                            const emp = store.employees.find((e) => e.id === eid);
+                                            if (!emp) return null;
+                                            return <div key={eid} className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold text-white border-2 border-slate-900" style={{ backgroundColor: emp.color }}>{emp.first_name[0]}{emp.last_name[0]}</div>;
+                                        })}
+                                    </div>
+                                    <span className="text-[11px] text-slate-500">{formatDate(project.start_date)} &ndash; {formatDate(project.end_date)}</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
 
             <Modal open={modalOpen} onClose={() => setModalOpen(false)} title={editId ? "Projekt bearbeiten" : "Neues Projekt"} size="md"

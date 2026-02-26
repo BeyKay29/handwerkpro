@@ -1,48 +1,102 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand: #2563eb;
-  --color-brand-light: #60a5fa;
-  --color-brand-dark: #1d4ed8;
-  --color-surface: #0f172a;
-  --color-surface-2: #1e293b;
-  --color-surface-3: #334155;
-  --color-border: #1e293b;
-  --color-border-hover: #334155;
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-danger: #ef4444;
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  --font-sans: "Inter", sans-serif;
 }
 
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #334155 transparent;
+@layer base {
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-slate-950 text-slate-200 font-sans antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Smooth scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgb(51 65 85 / 0.5);
+    border-radius: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(71 85 105 / 0.6);
+  }
+
+  /* Prevent input zoom on iOS */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  @media (min-width: 640px) {
+
+    input,
+    select,
+    textarea {
+      font-size: 14px !important;
+    }
+  }
+
+  /* Touch-friendly buttons */
+  button,
+  a {
+    touch-action: manipulation;
+  }
 }
 
-body {
-  @apply bg-slate-950 text-slate-200 antialiased;
-  font-family: var(--font-sans);
+@utility glass {
+  background: rgb(15 23 42 / 0.6);
+  border: 1px solid rgb(51 65 85 / 0.4);
+  backdrop-filter: blur(12px);
 }
 
-/* Glass surface utility */
-.glass {
-  @apply bg-slate-900/60 backdrop-blur-xl border border-slate-800/60;
+@utility animate-in {
+  animation: animateIn 0.25s ease-out;
 }
 
-.glass-hover {
-  @apply hover:bg-slate-800/60 hover:border-slate-700/60 transition-all duration-200;
+@utility slide-in-from-right {
+  --tw-enter-translate-x: 100%;
 }
 
-/* Focus ring */
-input:focus,
-select:focus,
-textarea:focus {
-  @apply outline-none ring-2 ring-brand/40 border-brand/60;
+@utility slide-in-from-bottom {
+  animation: slideUp 0.3s ease-out;
 }
 
-/* Smooth transitions */
-.transition-base {
-  @apply transition-all duration-200 ease-out;
+@keyframes animateIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

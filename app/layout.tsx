@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
+import SupportButton from "@/components/support-button";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,7 +18,7 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "HandwerkPro | Professionelle Handwerkssoftware",
   description:
-    "Die moderne SaaS-Lösung für Handwerksbetriebe. Angebote, Rechnungen, Projekte und Zeiterfassung in einer Anwendung.",
+    "Die moderne SaaS-Loesung fuer Handwerksbetriebe. Angebote, Rechnungen, Projekte und Zeiterfassung in einer Anwendung.",
 };
 
 export default function RootLayout({
@@ -29,6 +30,7 @@ export default function RootLayout({
     <html lang="de" className="dark">
       <body className={`${inter.variable} ${outfit.variable} font-sans`}>
         {children}
+        <SupportButton />
       </body>
     </html>
   );

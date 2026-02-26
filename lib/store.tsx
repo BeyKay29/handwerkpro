@@ -47,6 +47,14 @@ interface Store {
     getCustomerName: (id: string) => string;
     getEmployeeName: (id: string) => string;
     getProjectName: (id?: string) => string;
+
+    // Aggregation
+    getCustomerRevenue: (customerId: string) => number;
+    getCustomerOpenAmount: (customerId: string) => number;
+    getCustomerDocCount: (customerId: string) => number;
+    getCustomerProjectCount: (customerId: string) => number;
+    getProjectInvoiced: (projectId: string) => number;
+    getProjectPaid: (projectId: string) => number;
 }
 
 const StoreContext = createContext<Store | null>(null);
@@ -179,6 +187,26 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }, [employees]);
     const getProjectName = useCallback((id?: string) => (id ? projects.find((p) => p.id === id)?.name || "\u2014" : "\u2014"), [projects]);
 
+    // --- Aggregation Helpers ---
+    const getCustomerRevenue = useCallback((customerId: string) => {
+        return invoices.filter((d) => d.customer_id === customerId && d.status === "bezahlt").reduce((s, d) => s + d.total_amount, 0);
+    }, [invoices]);
+    const getCustomerOpenAmount = useCallback((customerId: string) => {
+        return invoices.filter((d) => d.customer_id === customerId && d.doc_type === "rechnung" && d.status !== "bezahlt" && d.status !== "entwurf").reduce((s, d) => s + (d.total_amount - d.paid_amount), 0);
+    }, [invoices]);
+    const getCustomerDocCount = useCallback((customerId: string) => {
+        return invoices.filter((d) => d.customer_id === customerId).length;
+    }, [invoices]);
+    const getCustomerProjectCount = useCallback((customerId: string) => {
+        return projects.filter((p) => p.customer_id === customerId).length;
+    }, [projects]);
+    const getProjectInvoiced = useCallback((projectId: string) => {
+        return invoices.filter((d) => d.project_id === projectId && d.doc_type === "rechnung").reduce((s, d) => s + d.total_amount, 0);
+    }, [invoices]);
+    const getProjectPaid = useCallback((projectId: string) => {
+        return invoices.filter((d) => d.project_id === projectId && d.status === "bezahlt").reduce((s, d) => s + d.total_amount, 0);
+    }, [invoices]);
+
     const store: Store = {
         customers, employees, projects, invoices, timeEntries, catalog,
         addCustomer, updateCustomer, deleteCustomer,
@@ -188,6 +216,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         addTimeEntry, updateTimeEntry, deleteTimeEntry,
         addCatalogItem, updateCatalogItem, deleteCatalogItem,
         getCustomerName, getEmployeeName, getProjectName,
+        getCustomerRevenue, getCustomerOpenAmount, getCustomerDocCount, getCustomerProjectCount,
+        getProjectInvoiced, getProjectPaid,
     };
 
     return <StoreContext.Provider value={store}>{children}</StoreContext.Provider>;

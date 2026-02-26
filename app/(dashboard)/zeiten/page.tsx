@@ -107,8 +107,8 @@ export default function ZeitenPage() {
     const pending = store.timeEntries.filter((e) => !e.is_approved);
 
     return (
-        <div className="p-8 max-w-[1400px] mx-auto space-y-6">
-            <header className="flex items-end justify-between">
+        <div className="p-5 lg:p-8 max-w-[1400px] mx-auto space-y-6">
+            <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                     <h1 className="font-display text-3xl font-extrabold text-white tracking-tight">Zeiterfassung</h1>
                     <p className="text-slate-400 text-sm mt-1">{store.timeEntries.length} Eintraege | {pending.length} zur Genehmigung</p>

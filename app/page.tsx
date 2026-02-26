@@ -128,9 +128,9 @@ export default function LandingPage() {
             </span>
           </div>
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-sm text-slate-400 hover:text-white transition-colors font-medium">
+            <Link href="/funktionen" className="text-sm text-slate-400 hover:text-white transition-colors font-medium">
               Funktionen
-            </a>
+            </Link>
             <a href="#pricing" className="text-sm text-slate-400 hover:text-white transition-colors font-medium">
               Preise
             </a>
@@ -153,14 +153,14 @@ export default function LandingPage() {
       </header>
 
       {/* Hero */}
-      <section className="pt-36 pb-24 px-6 relative overflow-hidden">
+      <section className="pt-28 sm:pt-36 pb-16 sm:pb-24 px-5 sm:px-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(37,99,235,0.12),transparent_60%)]" />
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full text-xs font-semibold text-blue-400 mb-8">
             <Zap className="w-3.5 h-3.5" />
             Neu: Automatisiertes Mahnwesen mit 3 Stufen
           </div>
-          <h1 className="font-display text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-[1.1] mb-8">
+          <h1 className="font-display text-3xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-[1.1] mb-6 sm:mb-8">
             Die Software, die Ihr
             <br />
             Handwerksbetrieb
@@ -181,14 +181,14 @@ export default function LandingPage() {
               30 Tage kostenlos testen
               <ArrowRight className="w-4 h-4" />
             </Link>
-            <a
-              href="#features"
+            <Link
+              href="/funktionen"
               className="flex items-center gap-2 px-8 py-3.5 border border-slate-700 hover:border-slate-600 text-slate-300 hover:text-white font-semibold rounded-xl transition-all text-sm"
             >
-              Funktionen ansehen
-            </a>
+              Alle Funktionen im Detail
+            </Link>
           </div>
-          <div className="flex items-center justify-center gap-8 mt-10 text-xs text-slate-500">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mt-8 sm:mt-10 text-xs text-slate-500">
             {["Keine Kreditkarte noetig", "In 2 Minuten startklar", "Jederzeit kuendbar"].map((t) => (
               <span key={t} className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
@@ -217,8 +217,8 @@ export default function LandingPage() {
                 key={f.title}
                 onClick={() => setOpenFeature(openFeature === idx ? null : idx)}
                 className={`text-left rounded-2xl p-6 transition-all duration-300 group cursor-pointer border ${openFeature === idx
-                    ? "bg-blue-500/10 border-blue-500/30 ring-1 ring-blue-500/20"
-                    : "glass hover:border-slate-700/60"
+                  ? "bg-blue-500/10 border-blue-500/30 ring-1 ring-blue-500/20"
+                  : "glass hover:border-slate-700/60"
                   }`}
               >
                 <div className="flex items-start justify-between mb-4">
@@ -333,8 +333,8 @@ export default function LandingPage() {
               <div
                 key={plan.name}
                 className={`rounded-2xl p-8 transition-all duration-300 ${plan.highlight
-                    ? "bg-blue-600/10 border-2 border-blue-500/30 relative"
-                    : "glass hover:border-slate-700/60"
+                  ? "bg-blue-600/10 border-2 border-blue-500/30 relative"
+                  : "glass hover:border-slate-700/60"
                   }`}
               >
                 {plan.highlight && (
@@ -359,8 +359,8 @@ export default function LandingPage() {
                 <Link
                   href="/login"
                   className={`w-full flex items-center justify-center py-3 rounded-lg text-sm font-bold transition-all ${plan.highlight
-                      ? "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20"
-                      : "border border-slate-700 hover:border-slate-600 text-slate-300 hover:text-white"
+                    ? "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20"
+                    : "border border-slate-700 hover:border-slate-600 text-slate-300 hover:text-white"
                     }`}
                 >
                   Jetzt starten

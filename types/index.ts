@@ -17,15 +17,20 @@ export interface Customer {
     created_at: string;
 }
 
+export type ContractType = "vollzeit" | "teilzeit" | "minijob" | "freelancer";
+
 export interface Employee {
     id: string;
     company_id: string;
     first_name: string;
     last_name: string;
     role?: string;
-    hourly_rate: number;
     email?: string;
+    password?: string;
     phone?: string;
+    hourly_rate: number;
+    monthly_salary?: number;
+    contract_type?: ContractType;
     skills: string[];
     color: string;
     is_active: boolean;

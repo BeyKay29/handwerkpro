@@ -24,13 +24,12 @@ export default function DashboardPage() {
     const todayStr = new Date().toLocaleDateString("de-DE", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
 
     return (
-        <div className="p-8 max-w-[1400px] mx-auto space-y-8">
-            <header className="flex items-end justify-between">
+        <div className="p-5 lg:p-8 max-w-[1400px] mx-auto space-y-6">
+            <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                 <div>
-                    <h1 className="font-display text-3xl font-extrabold text-white tracking-tight">Dashboard</h1>
-                    <p className="text-slate-400 text-sm mt-1">{todayStr}</p>
+                    <p className="text-slate-400 text-sm">{todayStr}</p>
                 </div>
-                <Link href="/angebote" className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-lg transition-colors shadow-lg shadow-blue-500/20">
+                <Link href="/angebote" className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-lg transition-colors shadow-lg shadow-blue-500/20 w-fit">
                     <Plus className="w-4 h-4" /> Neues Dokument
                 </Link>
             </header>

@@ -1,4 +1,7 @@
+"use client";
+
 import Sidebar from "@/components/sidebar";
+import TopBar from "@/components/top-bar";
 import { StoreProvider } from "@/lib/store";
 import { ToastProvider } from "@/components/ui/toast";
 
@@ -12,9 +15,12 @@ export default function DashboardLayout({
             <ToastProvider>
                 <div className="flex min-h-screen bg-slate-950">
                     <Sidebar />
-                    <main className="flex-1 ml-[260px] transition-all duration-300">
-                        {children}
-                    </main>
+                    <div className="flex-1 flex flex-col min-w-0">
+                        <TopBar />
+                        <main className="flex-1 overflow-x-hidden">
+                            {children}
+                        </main>
+                    </div>
                 </div>
             </ToastProvider>
         </StoreProvider>

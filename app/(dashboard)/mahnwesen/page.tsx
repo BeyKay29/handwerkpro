@@ -37,7 +37,7 @@ export default function MahnwesenPage() {
     const stufeColor = (l: number) => (l === 0 ? "bg-slate-500/15 text-slate-400" : l === 1 ? "bg-amber-500/15 text-amber-400" : l === 2 ? "bg-red-500/15 text-red-400" : "bg-purple-500/15 text-purple-400");
 
     return (
-        <div className="p-8 max-w-[1400px] mx-auto space-y-6">
+        <div className="p-5 lg:p-8 max-w-[1400px] mx-auto space-y-6">
             <header>
                 <h1 className="font-display text-3xl font-extrabold text-white tracking-tight">Mahnwesen</h1>
                 <p className="text-slate-400 text-sm mt-1">{overdue.length} ueberfaellige Forderungen</p>
