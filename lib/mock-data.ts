@@ -42,14 +42,16 @@ export const mockInvoices: Invoice[] = [
 ];
 
 export const mockTimeEntries: TimeEntry[] = [
-    { id: "t1", company_id: "co1", employee_id: "e1", project_id: "p1", date: ago(1), start_time: "07:00", end_time: "15:30", duration: 8.5, type: "arbeit", description: "Wandflächen vorbereitet", is_approved: false, created_at: ago(1) },
-    { id: "t2", company_id: "co1", employee_id: "e2", project_id: "p2", date: ago(1), start_time: "07:30", end_time: "16:00", duration: 8.5, type: "arbeit", description: "Bauüberwachung Fassade", is_approved: true, created_at: ago(1) },
-    { id: "t3", company_id: "co1", employee_id: "e1", project_id: "p1", date: ago(2), start_time: "07:00", end_time: "15:00", duration: 8, type: "arbeit", description: "Grundierungsarbeiten", is_approved: false, created_at: ago(2) },
-    { id: "t4", company_id: "co1", employee_id: "e3", project_id: "p1", date: ago(2), start_time: "07:00", end_time: "16:00", duration: 9, type: "arbeit", description: "Trockenbauarbeiten Zimmer 2", is_approved: true, created_at: ago(2) },
-    { id: "t5", company_id: "co1", employee_id: "e4", project_id: "p2", date: ago(3), start_time: "06:30", end_time: "15:00", duration: 8.5, type: "arbeit", description: "Fassadenabschnitt A fertiggestellt", is_approved: false, created_at: ago(3) },
-    { id: "t6", company_id: "co1", employee_id: "e5", project_id: undefined, date: ago(1), start_time: "08:00", end_time: "17:00", duration: 8, type: "arbeit", description: "Bürotätigkeiten, Rechnungsbearbeitung", is_approved: true, created_at: ago(1) },
-    { id: "t7", company_id: "co1", employee_id: "e3", project_id: "p3", date: ago(4), start_time: "07:00", end_time: "14:30", duration: 7.5, type: "fahrt", description: "Materialanlieferung Baustelle", is_approved: true, created_at: ago(4) },
-    { id: "t8", company_id: "co1", employee_id: "e1", project_id: "p1", date: ago(5), start_time: "07:00", end_time: "15:30", duration: 8.5, type: "arbeit", description: "Deckenanstrich Bad/Küche", is_approved: true, created_at: ago(5) },
+    { id: "t1", company_id: "co1", employee_id: "e1", project_id: "p1", date: ago(1), start_time: "07:00", end_time: "15:30", pause_minutes: 30, duration: 8, type: "arbeit", description: "Wandflächen vorbereitet", is_approved: false, created_at: ago(1) },
+    { id: "t2", company_id: "co1", employee_id: "e2", project_id: "p2", date: ago(1), start_time: "07:30", end_time: "16:00", pause_minutes: 45, duration: 7.75, type: "arbeit", description: "Bauüberwachung Fassade", is_approved: true, created_at: ago(1) },
+    { id: "t3", company_id: "co1", employee_id: "e1", project_id: "p1", date: ago(2), start_time: "07:00", end_time: "15:00", pause_minutes: 30, duration: 7.5, type: "arbeit", description: "Grundierungsarbeiten", is_approved: false, created_at: ago(2) },
+    { id: "t4", company_id: "co1", employee_id: "e3", project_id: "p1", date: ago(2), start_time: "07:00", end_time: "16:00", pause_minutes: 30, duration: 8.5, type: "arbeit", description: "Trockenbauarbeiten Zimmer 2", is_approved: true, created_at: ago(2) },
+    { id: "t5", company_id: "co1", employee_id: "e4", project_id: "p2", date: ago(3), start_time: "06:30", end_time: "15:00", pause_minutes: 30, duration: 8, type: "arbeit", description: "Fassadenabschnitt A", is_approved: false, created_at: ago(3) },
+    { id: "t6", company_id: "co1", employee_id: "e5", project_id: undefined, date: ago(1), start_time: "08:00", end_time: "17:00", pause_minutes: 60, duration: 8, type: "arbeit", description: "Rechnungsbearbeitung", is_approved: true, created_at: ago(1) },
+    { id: "t7", company_id: "co1", employee_id: "e3", project_id: "p3", date: ago(4), start_time: "07:00", end_time: "14:30", pause_minutes: 30, duration: 7, type: "fahrt", description: "Materialanlieferung", is_approved: true, created_at: ago(4) },
+    { id: "t8", company_id: "co1", employee_id: "e1", project_id: "p1", date: ago(5), start_time: "07:00", end_time: "15:30", pause_minutes: 30, duration: 8, type: "arbeit", description: "Deckenanstrich Bad/Küche", is_approved: true, created_at: ago(5) },
+    { id: "t9", company_id: "co1", employee_id: "e4", project_id: undefined, date: ago(4), start_time: "08:00", end_time: "12:00", pause_minutes: 0, duration: 4, type: "schulung", description: "Arbeitssicherheit Schulung", is_approved: true, created_at: ago(4) },
+    { id: "t10", company_id: "co1", employee_id: "e3", project_id: "p2", date: ago(3), start_time: "07:00", end_time: "11:00", pause_minutes: 0, duration: 4, type: "schlechtwetter", description: "Regen, Baustelle nicht begehbar", is_approved: true, created_at: ago(3) },
 ];
 
 export const mockLeaveRequests: LeaveRequest[] = [

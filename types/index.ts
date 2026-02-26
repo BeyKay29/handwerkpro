@@ -1,7 +1,7 @@
 export type DocumentType = "angebot" | "rechnung" | "auftragsbestaetigung" | "lieferschein";
 export type DocumentStatus = "entwurf" | "offen" | "angenommen" | "abgelehnt" | "ueberfaellig" | "bezahlt" | "gemahnt";
 export type ProjectStatus = "planung" | "aktiv" | "abgeschlossen" | "storniert";
-export type TimeEntryType = "arbeit" | "fahrt" | "pause" | "urlaub" | "krankheit";
+export type TimeEntryType = "arbeit" | "fahrt" | "pause" | "urlaub" | "krankheit" | "schlechtwetter" | "schulung";
 export type LeaveStatus = "beantragt" | "genehmigt" | "abgelehnt" | "storniert";
 export type LeaveType = "urlaub" | "krankheit" | "sonderurlaub" | "freizeitausgleich";
 
@@ -99,7 +99,8 @@ export interface TimeEntry {
     date: string;
     start_time?: string;
     end_time?: string;
-    duration: number;
+    pause_minutes?: number;     // Pause in Minuten
+    duration: number;           // netto Stunden (nach Pause)
     type: TimeEntryType;
     description?: string;
     is_approved: boolean;
