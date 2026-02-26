@@ -2,6 +2,8 @@ export type DocumentType = "angebot" | "rechnung" | "auftragsbestaetigung" | "li
 export type DocumentStatus = "entwurf" | "offen" | "angenommen" | "abgelehnt" | "ueberfaellig" | "bezahlt" | "gemahnt";
 export type ProjectStatus = "planung" | "aktiv" | "abgeschlossen" | "storniert";
 export type TimeEntryType = "arbeit" | "fahrt" | "pause" | "urlaub" | "krankheit";
+export type LeaveStatus = "beantragt" | "genehmigt" | "abgelehnt" | "storniert";
+export type LeaveType = "urlaub" | "krankheit" | "sonderurlaub" | "freizeitausgleich";
 
 export interface Customer {
     id: string;
@@ -101,9 +103,25 @@ export interface TimeEntry {
     type: TimeEntryType;
     description?: string;
     is_approved: boolean;
+    admin_note?: string;
     created_at: string;
     employee?: Employee;
     project?: Project;
+}
+
+export interface LeaveRequest {
+    id: string;
+    company_id: string;
+    employee_id: string;
+    type: LeaveType;
+    status: LeaveStatus;
+    start_date: string;
+    end_date: string;
+    days: number;
+    reason?: string;
+    admin_note?: string;
+    approved_by?: string;
+    created_at: string;
 }
 
 export interface CatalogItem {

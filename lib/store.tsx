@@ -1,8 +1,8 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
-import { Customer, Employee, Project, Invoice, TimeEntry, CatalogItem, Notification, TextTemplate } from "@/types";
-import { mockCustomers, mockEmployees, mockProjects, mockInvoices, mockTimeEntries, mockCatalog } from "@/lib/mock-data";
+import { Customer, Employee, Project, Invoice, TimeEntry, CatalogItem, Notification, TextTemplate, LeaveRequest } from "@/types";
+import { mockCustomers, mockEmployees, mockProjects, mockInvoices, mockTimeEntries, mockCatalog, mockLeaveRequests } from "@/lib/mock-data";
 import { uid } from "@/lib/utils";
 import { createClient } from "@/lib/supabase";
 
@@ -14,6 +14,7 @@ interface Store {
     projects: Project[];
     invoices: Invoice[];
     timeEntries: TimeEntry[];
+    leaveRequests: LeaveRequest[];
     catalog: CatalogItem[];
     notifications: Notification[];
     templates: TextTemplate[];
@@ -54,6 +55,15 @@ interface Store {
     addTimeEntry: (t: Omit<TimeEntry, "id" | "company_id" | "created_at">) => TimeEntry;
     updateTimeEntry: (id: string, t: Partial<TimeEntry>) => void;
     deleteTimeEntry: (id: string) => void;
+    approveTimeEntry: (id: string, note?: string) => void;
+    rejectTimeEntry: (id: string, note: string) => void;
+
+    // Leave Requests
+    addLeaveRequest: (r: Omit<LeaveRequest, "id" | "company_id" | "created_at" | "status">) => LeaveRequest;
+    updateLeaveRequest: (id: string, r: Partial<LeaveRequest>) => void;
+    deleteLeaveRequest: (id: string) => void;
+    approveLeaveRequest: (id: string, note?: string) => void;
+    rejectLeaveRequest: (id: string, note: string) => void;
 
     // Catalog
     addCatalogItem: (c: Omit<CatalogItem, "id" | "company_id" | "created_at">) => CatalogItem;
@@ -109,6 +119,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const [projects, setProjects] = useState<Project[]>([]);
     const [invoices, setInvoices] = useState<Invoice[]>([]);
     const [timeEntries, setTimeEntries] = useState<TimeEntry[]>([]);
+    const [leaveRequests, setLeaveRequests] = useState<LeaveRequest[]>([]);
     const [catalog, setCatalog] = useState<CatalogItem[]>([]);
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [templates, setTemplates] = useState<TextTemplate[]>([]);
@@ -124,6 +135,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             setProjects(loadOrDefault("projects", mockProjects));
             setInvoices(loadOrDefault("invoices", mockInvoices));
             setTimeEntries(loadOrDefault("timeEntries", mockTimeEntries));
+            setLeaveRequests(loadOrDefault("leaveRequests", mockLeaveRequests));
             setCatalog(loadOrDefault("catalog", mockCatalog));
             setNotifications(loadOrDefault("notifications", []));
             setTemplates(loadOrDefault("templates", [
@@ -170,6 +182,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     useEffect(() => { if (loaded) persist("projects", projects); }, [projects, loaded]);
     useEffect(() => { if (loaded) persist("invoices", invoices); }, [invoices, loaded]);
     useEffect(() => { if (loaded) persist("timeEntries", timeEntries); }, [timeEntries, loaded]);
+    useEffect(() => { if (loaded) persist("leaveRequests", leaveRequests); }, [leaveRequests, loaded]);
     useEffect(() => { if (loaded) persist("catalog", catalog); }, [catalog, loaded]);
     useEffect(() => { if (loaded) persist("notifications", notifications); }, [notifications, loaded]);
     useEffect(() => { if (loaded) persist("templates", templates); }, [templates, loaded]);
@@ -324,6 +337,35 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const deleteTimeEntry = useCallback((id: string) => {
         setTimeEntries((prev) => prev.filter((x) => x.id !== id));
     }, []);
+    const approveTimeEntry = useCallback((id: string, note?: string) => {
+        setTimeEntries((prev) => prev.map((x) => x.id === id ? { ...x, is_approved: true, admin_note: note || x.admin_note } : x));
+    }, []);
+    const rejectTimeEntry = useCallback((id: string, note: string) => {
+        setTimeEntries((prev) => prev.map((x) => x.id === id ? { ...x, is_approved: false, admin_note: note } : x));
+    }, []);
+
+    // --- Leave Requests ---
+    const addLeaveRequest = useCallback((r: Omit<LeaveRequest, "id" | "company_id" | "created_at" | "status">) => {
+        const entry: LeaveRequest = { ...r, id: uid(), company_id: "co1", status: "beantragt", created_at: now() };
+        setLeaveRequests((prev) => [...prev, entry]);
+        return entry;
+    }, []);
+    const updateLeaveRequest = useCallback((id: string, r: Partial<LeaveRequest>) => {
+        setLeaveRequests((prev) => prev.map((x) => (x.id === id ? { ...x, ...r } : x)));
+    }, []);
+    const deleteLeaveRequest = useCallback((id: string) => {
+        setLeaveRequests((prev) => prev.filter((x) => x.id !== id));
+    }, []);
+    const approveLeaveRequest = useCallback((id: string, note?: string) => {
+        setLeaveRequests((prev) => prev.map((x) =>
+            x.id === id ? { ...x, status: "genehmigt" as const, admin_note: note, approved_by: currentUser?.id } : x
+        ));
+    }, [currentUser]);
+    const rejectLeaveRequest = useCallback((id: string, note: string) => {
+        setLeaveRequests((prev) => prev.map((x) =>
+            x.id === id ? { ...x, status: "abgelehnt" as const, admin_note: note, approved_by: currentUser?.id } : x
+        ));
+    }, [currentUser]);
 
     // --- Catalog ---
     const addCatalogItem = useCallback((c: Omit<CatalogItem, "id" | "company_id" | "created_at">) => {
@@ -402,12 +444,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }, [invoices]);
 
     const store: Store = {
-        customers, employees, projects, invoices, timeEntries, catalog, notifications, templates,
+        customers, employees, projects, invoices, timeEntries, leaveRequests, catalog, notifications, templates,
         addCustomer, updateCustomer, deleteCustomer,
         addEmployee, updateEmployee, deleteEmployee,
         addProject, updateProject, deleteProject,
         addInvoice, updateInvoice, deleteInvoice,
-        addTimeEntry, updateTimeEntry, deleteTimeEntry,
+        addTimeEntry, updateTimeEntry, deleteTimeEntry, approveTimeEntry, rejectTimeEntry,
+        addLeaveRequest, updateLeaveRequest, deleteLeaveRequest, approveLeaveRequest, rejectLeaveRequest,
         addCatalogItem, updateCatalogItem, deleteCatalogItem,
         addNotification, markAsRead, clearNotifications,
         addTemplate, updateTemplate, deleteTemplate,
